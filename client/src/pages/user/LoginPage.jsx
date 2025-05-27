@@ -43,7 +43,7 @@ export default function LoginPage() {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="password">Mật khẩu</Label>
-              <Link href="/quen-mat-khau" className="text-sm text-blue-600 hover:underline">
+              <Link to="/quen-mat-khau" className="text-sm text-blue-600 hover:underline">
                 Quên mật khẩu?
               </Link>
             </div>
