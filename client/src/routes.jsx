@@ -30,6 +30,7 @@ const RouterConfig = () => (
       <Route path = "/quen-mat-khau" element = {<ForgotPasswordPage/>} />
       <Route path="/lien-he" element={< ContactPage/>} />
       <Route path="/tai-khoan" element={<ProfilePage />} />
+
     </Route>
     <Route path="/dashboard" element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
       <Route path="manage-tours" element={<ManageTours />} />
