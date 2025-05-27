@@ -1,8 +1,6 @@
 import { Navigate, Route, Routes, Outlet } from "react-router-dom";
-import Home from './pages/Home';
-import About from './pages/About';
-import Contact from './pages/Contact';
-import BookingLayout from "./layouts/BookingLayout";
+import UserLayout from "./layouts/UserLayout";
+import HomePage from "./pages/user/HomePage"
 import DashboardLayout from "./layouts/DashboardLayout";
 import ManageTours from "./pages/ManageTours";
 import Revenue from "./pages/Revenue";
@@ -20,10 +18,8 @@ const PrivateRoute = ({ children }) => {
 
 const RouterConfig = () => (
   <Routes>
-    <Route path="/" element={<BookingLayout />}>
-      <Route index element={<Home />} />
-      <Route path="about" element={<About />} />
-      <Route path="contact" element={<Contact />} />
+    <Route path="/" element={<UserLayout />}>
+      <Route index element={<HomePage />} />
     </Route>
     <Route path="/dashboard" element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
       <Route path="manage-tours" element={<ManageTours />} />
