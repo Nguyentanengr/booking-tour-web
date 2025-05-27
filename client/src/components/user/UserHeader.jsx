@@ -111,7 +111,9 @@ export default function UserHeader() {
           {isLoggedIn ? (
             <>
               {/* Favorite Tours */}
-              <Link to="/favorite-tours">
+
+              <Link to="/tour-yeu-thich">
+
                 <Button variant="ghost" size="icon" className="relative ">
                   <Heart size={18} />
                   <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-blue-600">
@@ -121,7 +123,7 @@ export default function UserHeader() {
               </Link>
 
               {/* My Tours */}
-              <Link to="/my-tours">
+              <Link to="/tour-cua-toi">
                 <Button variant="ghost" size="icon" className="relative">
                   <MapPin size={18} />
                 </Button>
@@ -177,7 +179,7 @@ export default function UserHeader() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[240px]">
                   <DropdownMenuItem asChild>
-                    <Link to="/profile" className="flex items-center gap-2">
+                    <Link to="/tai-khoan" className="flex items-center gap-2">
                       <User size={16} />
                       <span>Thông tin cá nhân</span>
                     </Link>
