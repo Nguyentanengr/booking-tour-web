@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ChevronDown, User, Heart, MapPin, LogOut, Bell } from "lucide-react"
 
 const regions = [
@@ -53,7 +54,7 @@ const regions = [
 ]
 
 export default function UserHeader() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(true)
   const [unreadNotifications, setUnreadNotifications] = useState(3)
 
   const handleLogout = () => {
@@ -111,9 +112,9 @@ export default function UserHeader() {
             <>
               {/* Favorite Tours */}
               <Link to="/favorite-tours">
-                <Button variant="ghost" size="icon" className="relative">
+                <Button variant="ghost" size="icon" className="relative ">
                   <Heart size={18} />
-                  <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">
+                  <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-blue-600">
                     3
                   </Badge>
                 </Button>
@@ -132,7 +133,7 @@ export default function UserHeader() {
                   <Button variant="ghost" size="icon" className="relative">
                     <Bell size={18} />
                     {unreadNotifications > 0 && (
-                      <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">
+                      <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-blue-600">
                         {unreadNotifications}
                       </Badge>
                     )}
@@ -166,13 +167,10 @@ export default function UserHeader() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center gap-2">
-                    <Image
-                      src="/placeholder.svg?height=32&width=32"
-                      alt="Avatar"
-                      width={32}
-                      height={32}
-                      className="rounded-full"
-                    />
+                    <Avatar>
+                        <AvatarImage src="https://github.com/shadcn.png" />
+                        <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
                     <span className="hidden md:inline">Nguyễn Văn A</span>
                     <ChevronDown size={16} />
                   </Button>
@@ -182,18 +180,6 @@ export default function UserHeader() {
                     <Link to="/profile" className="flex items-center gap-2">
                       <User size={16} />
                       <span>Thông tin cá nhân</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/favorite-tours" className="flex items-center gap-2">
-                      <Heart size={16} />
-                      <span>Tour yêu thích</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/my-tours" className="flex items-center gap-2">
-                      <MapPin size={16} />
-                      <span>My Tour</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
