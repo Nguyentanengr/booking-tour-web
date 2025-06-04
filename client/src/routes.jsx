@@ -5,8 +5,8 @@ import LoginPage from "./pages/user/LoginPage";
 import RegisterPage from "./pages/user/RegisterPage";
 import ForgotPasswordPage from "./pages/user/ForgotPasswordPage";
 import DashboardLayout from "./layouts/DashboardLayout";
-import ManageTours from "./pages/ManageTours";
-import Revenue from "./pages/Revenue";
+import Overview from "./pages/Overview";
+import Account from "./pages/Account";
 
 // Simple private route wrapper
 const PrivateRoute = ({ children }) => {
@@ -27,9 +27,9 @@ const RouterConfig = () => (
       <Route path = "/dang-ky" element={<RegisterPage/>} />
       <Route path = "/quen-mat-khau" element = {<ForgotPasswordPage/>} />
     </Route>
-    <Route path="/dashboard" element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
-      <Route path="manage-tours" element={<ManageTours />} />
-      <Route path="revenue" element={<Revenue />} />
+    <Route path="/admin" element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
+      <Route path="tong-quan" element={<Overview />} />
+      <Route path="tai-khoan" element={<Account />} />
     </Route>
   </Routes>
 );
