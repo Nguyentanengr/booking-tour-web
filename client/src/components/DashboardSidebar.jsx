@@ -28,6 +28,16 @@ const DashboardSidebar = () => {
             Tổng quan
           </NavLink>
           <NavLink
+            to="/admin/tour"
+            className={({ isActive }) =>
+              isActive
+                ? 'bg-blue-100 text-blue-600 rounded px-3 py-2 font-semibold'
+                : 'text-blue-900 hover:bg-blue-50 rounded px-3 py-2'
+            }
+          >
+            Quản lý tour
+          </NavLink>
+          <NavLink
             to="/admin/tai-khoan"
             className={({ isActive }) =>
               isActive
@@ -37,6 +47,7 @@ const DashboardSidebar = () => {
           >
             Quản lý tài khoản
           </NavLink>
+
         </nav>
       </div>
       <div className="flex items-center space-x-3 py-4 px-4 border-t">
