@@ -7,8 +7,8 @@ import ForgotPasswordPage from "./pages/user/ForgotPasswordPage";
 import ProfilePage from "./pages/user/ProfilePage";
 import ContactPage from "./pages/user/ContactPage";
 import DashboardLayout from "./layouts/DashboardLayout";
-import ManageTours from "./pages/ManageTours";
-import Revenue from "./pages/Revenue";
+import Overview from "./pages/Overview";
+import Account from "./pages/Account";
 
 // Simple private route wrapper
 const PrivateRoute = ({ children }) => {
@@ -32,9 +32,9 @@ const RouterConfig = () => (
       <Route path="/tai-khoan" element={<ProfilePage />} />
 
     </Route>
-    <Route path="/dashboard" element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
-      <Route path="manage-tours" element={<ManageTours />} />
-      <Route path="revenue" element={<Revenue />} />
+    <Route path="/admin" element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
+      <Route path="tong-quan" element={<Overview />} />
+      <Route path="tai-khoan" element={<Account />} />
     </Route>
   </Routes>
 );
