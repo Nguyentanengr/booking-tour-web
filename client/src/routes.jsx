@@ -4,6 +4,8 @@ import HomePage from "./pages/user/HomePage"
 import LoginPage from "./pages/user/LoginPage";
 import RegisterPage from "./pages/user/RegisterPage";
 import ForgotPasswordPage from "./pages/user/ForgotPasswordPage";
+import ProfilePage from "./pages/user/ProfilePage";
+import ContactPage from "./pages/user/ContactPage";
 import DashboardLayout from "./layouts/DashboardLayout";
 import Overview from "./pages/Overview";
 import Account from "./pages/Account";
@@ -26,6 +28,9 @@ const RouterConfig = () => (
       <Route path = "/dang-nhap" element={<LoginPage />} />
       <Route path = "/dang-ky" element={<RegisterPage/>} />
       <Route path = "/quen-mat-khau" element = {<ForgotPasswordPage/>} />
+      <Route path="/lien-he" element={< ContactPage/>} />
+      <Route path="/tai-khoan" element={<ProfilePage />} />
+
     </Route>
     <Route path="/admin" element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
       <Route path="tong-quan" element={<Overview />} />
