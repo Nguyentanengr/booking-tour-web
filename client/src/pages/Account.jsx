@@ -497,7 +497,6 @@ const Account = () => {
 
   return (
     <div className="container mx-auto py-8 px-5">
-      <h2 className="text-2xl font-bold mb-6">Quản lý tài khoản</h2>
       <div className="mb-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           {['admins', 'users', 'guides'].map((tab) => (
