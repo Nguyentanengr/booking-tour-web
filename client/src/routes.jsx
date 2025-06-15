@@ -10,6 +10,7 @@ import DashboardLayout from "./layouts/DashboardLayout";
 import Overview from "./pages/Overview";
 import Account from "./pages/Account";
 import TourAdmin from "./pages/TourAdmin";
+import Departure from "./pages/Departure";
 
 // Simple private route wrapper
 const PrivateRoute = ({ children }) => {
@@ -35,6 +36,7 @@ const RouterConfig = () => (
     </Route>
     <Route path="/admin" element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
       <Route path="tong-quan" element={<Overview />} />
+      <Route path="chuyen-di" element={<Departure />} />
       <Route path="tai-khoan" element={<Account />} />
       <Route path="tour" element={<TourAdmin />} />
     </Route>
