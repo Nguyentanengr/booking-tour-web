@@ -2,7 +2,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import avatar from '../assets/img/default-avatar.png';
-import { Home, Map, Bus, Users, User, Mail } from 'lucide-react';
+import { Home, Map, Bus, Users, User, Mail, Ticket } from 'lucide-react';
 
 const DashboardSidebar = () => {
     // Giả lập thông tin người dùng, bạn có thể thay bằng dữ liệu thực tế
@@ -17,6 +17,7 @@ const DashboardSidebar = () => {
         { to: "/admin/tong-quan", label: "Tổng quan", icon: Home },
         { to: "/admin/tour", label: "Quản lý tour", icon: Map },
         { to: "/admin/chuyen-di", label: "Quản lý chuyến đi", icon: Bus },
+        { to: "/admin/dat-cho", label: "Quản lý đặt chỗ", icon: Ticket }, 
         { to: "/admin/tai-khoan", label: "Quản lý tài khoản", icon: Users },
     ];
 
