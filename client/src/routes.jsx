@@ -13,6 +13,7 @@ import TourAdmin from "./pages/TourAdmin";
 import Departure from "./pages/Departure";
 import Booking from "./pages/Booking";
 import Payment from "./pages/Payment";
+import CustomersAnalytics from "./pages/CustomersAnalytics";
 
 // Simple private route wrapper
 const PrivateRoute = ({ children }) => {
@@ -38,11 +39,12 @@ const RouterConfig = () => (
     </Route>
     <Route path="/admin" element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
       <Route path="tong-quan" element={<Overview />} />
+      <Route path="khach-hang" element={<CustomersAnalytics />} />
       <Route path="chuyen-di" element={<Departure />} />
       <Route path="dat-cho" element={<Booking />} />
       <Route path="tour" element={<TourAdmin />} />
       <Route path="thanh-toan" element={<Payment />} />
-      <Route path="tai-khoan" element={<Account />} />
+      <Route path="nguoi-dung" element={<Account />} />
     </Route>
   </Routes>
 );
