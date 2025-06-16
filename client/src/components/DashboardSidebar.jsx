@@ -2,7 +2,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import avatar from '../assets/img/default-avatar.png';
-import { Home, Map, Bus, Users, User, Mail, Ticket } from 'lucide-react';
+import { Home, Map, Bus, Users, User, Mail, Ticket, CreditCardIcon, BarChart2 } from 'lucide-react';
 
 const DashboardSidebar = () => {
     // Giả lập thông tin người dùng, bạn có thể thay bằng dữ liệu thực tế
@@ -15,11 +15,12 @@ const DashboardSidebar = () => {
     // Định nghĩa các mục điều hướng để tránh lặp code NavLink
     const navItems = [
         { to: "/admin/tong-quan", label: "Tổng quan", icon: Home },
-        { to: "/admin/tour", label: "Quản lý tour", icon: Map },
-        { to: "/admin/chuyen-di", label: "Quản lý chuyến đi", icon: Bus },
-        { to: "/admin/dat-cho", label: "Quản lý đặt chỗ", icon: Ticket }, 
-        { to: "/admin/thanh-toan", label: "Quản lý thanh toán", icon: Ticket }, 
-        { to: "/admin/tai-khoan", label: "Quản lý tài khoản", icon: Users },
+        { to: "/admin/khach-hang", label: "Phân tích", icon: BarChart2 },
+        { to: "/admin/tour", label: "Danh sách Tour", icon: Map },
+        { to: "/admin/chuyen-di", label: "Chuyến đi ", icon: Bus },
+        { to: "/admin/dat-cho", label: "Đặt chỗ", icon: Ticket }, 
+        { to: "/admin/thanh-toan", label: "Thanh toán", icon: CreditCardIcon }, 
+        { to: "/admin/nguoi-dung", label: "Người dùng", icon: Users },
     ];
 
     // Hàm để tạo className dựa trên trạng thái isActive
