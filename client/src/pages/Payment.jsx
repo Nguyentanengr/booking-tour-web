@@ -386,17 +386,17 @@ export default function Payment() {
 
         <div className="bg-white rounded-lg shadow overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Giao dịch</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking ID</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Khách hàng</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Loại</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Số tiền</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phương thức</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày tạo</th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
+                <th className="px-6 py-2 text-left text-sm font-medium   tracking-wider">ID Giao dịch</th>
+                <th className="px-6 py-2 text-left text-sm font-medium   tracking-wider">Booking ID</th>
+                <th className="px-6 py-2 text-left text-sm font-medium   tracking-wider">Khách hàng</th>
+                <th className="px-6 py-2 text-left text-sm font-medium   tracking-wider">Loại</th>
+                <th className="px-6 py-2 text-left text-sm font-medium   tracking-wider">Số tiền</th>
+                <th className="px-6 py-2 text-left text-sm font-medium   tracking-wider">Phương thức</th>
+                <th className="px-6 py-2 text-left text-sm font-medium   tracking-wider">Trạng thái</th>
+                <th className="px-6 py-2 text-left text-sm font-medium   tracking-wider">Ngày tạo</th>
+                <th className="px-6 py-2 text-right text-sm font-medium   tracking-wider">Thao tác</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -405,15 +405,15 @@ export default function Payment() {
                   const bookingInfo = getBookingInfo(payment.booking_id);
                   return (
                     <tr key={payment._id} className="hover:bg-gray-100">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{payment.transaction_id}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{payment.booking_id || "N/A"}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{bookingInfo?.user_name || "N/A"}</td>
-                      <td className="px-6 py-4 whitespace-nowrap"><Badge variant={payment.type === "payment" ? "default" : "outline"}>{getTypeText(payment.type)}</Badge></td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><span className={payment.type === "refund" ? "text-red-600" : "text-green-600"}>{payment.type === "refund" ? "-" : "+"}{formatCurrency(payment.amount)}</span></td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{getMethodText(payment.payment_method)}</td>
-                      <td className="px-6 py-4 whitespace-nowrap"><Badge variant={getStatusBadgeVariant(payment.status)}>{getStatusText(payment.status)}</Badge></td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(payment.created_at)}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <td className="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900">{payment.transaction_id}</td>
+                      <td className="px-6 py-2 whitespace-nowrap text-sm text-gray-500">{payment.booking_id || "N/A"}</td>
+                      <td className="px-6 py-2 whitespace-nowrap text-sm text-gray-500">{bookingInfo?.user_name || "N/A"}</td>
+                      <td className="px-6 py-2 whitespace-nowrap"><Badge variant={payment.type === "payment" ? "default" : "outline"}>{getTypeText(payment.type)}</Badge></td>
+                      <td className="px-6 py-2 whitespace-nowrap text-sm text-gray-900"><span className={payment.type === "refund" ? "text-red-600" : "text-green-600"}>{payment.type === "refund" ? "-" : "+"}{formatCurrency(payment.amount)}</span></td>
+                      <td className="px-6 py-2 whitespace-nowrap text-sm text-gray-500">{getMethodText(payment.payment_method)}</td>
+                      <td className="px-6 py-2 whitespace-nowrap"><Badge variant={getStatusBadgeVariant(payment.status)}>{getStatusText(payment.status)}</Badge></td>
+                      <td className="px-6 py-2 whitespace-nowrap text-sm text-gray-500">{formatDate(payment.created_at)}</td>
+                      <td className="px-6 py-2 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex justify-end gap-1">
                           <Button variant="ghost" size="sm" onClick={() => openViewModal(payment)} className="text-green-600 hover:text-green-800 hover:bg-green-50" aria-label="Xem chi tiết"><EyeIcon className="h-4 w-4" /></Button>
                           <Button variant="ghost" size="sm" onClick={() => openEditModal(payment)} className="text-blue-600 hover:text-blue-800 hover:bg-blue-50" aria-label="Chỉnh sửa"><PencilIcon className="h-4 w-4" /></Button>
