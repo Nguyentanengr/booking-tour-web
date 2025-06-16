@@ -338,22 +338,35 @@ export default function Booking() {
         {/* Phân trang */}
         {totalPages > 1 && (
           <div className="flex justify-center mt-6">
-            <nav className="flex items-center space-x-2">
-              <Button variant="outline" size="sm" onClick={() => setCurrentPage(currentPage > 1 ? currentPage - 1 : 1)} disabled={currentPage === 1}>Trước</Button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <Button key={page} variant={currentPage === page ? "default" : "outline"} size="sm" onClick={() => setCurrentPage(page)} className={currentPage === page ? "bg-blue-600" : ""}>{page}</Button>
-              ))}
-              <Button variant="outline" size="sm" onClick={() => setCurrentPage(currentPage < totalPages ? currentPage + 1 : totalPages)} disabled={currentPage === totalPages}>Sau</Button>
-            </nav>
+            <div className="flex items-center justify-center gap-2">
+              <Button
+                variant="outline"
+                size="icon"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(currentPage > 1 ? currentPage - 1 : 1)}
+                className="h-6 w-6 cursor-pointer"
+              >
+                <ChevronLeftIcon className="h-3 w-3" />
+              </Button>
+              <span className="px-2 border rounded bg-white text-gray-800">{currentPage}</span>
+              <Button
+                variant="outline"
+                size="icon"
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage(currentPage < totalPages ? currentPage + 1 : totalPages)}
+                className="h-6 w-6 cursor-pointer"
+              >
+                <ChevronRightIcon className="h-3 w-3" />
+              </Button>
+            </div>
           </div>
         )}
-
         <AddBookingDialog open={showAddModal} onOpenChange={setShowAddModal} formData={formData} handleFormChange={handleFormChange} addPassenger={addPassenger} removePassenger={removePassenger} updatePassenger={updatePassenger} addService={addService} removeService={removeService} updateService={updateService} calculateTotal={calculateTotal} handleAddBooking={handleAddBooking} />
         <EditBookingDialog open={showEditModal} onOpenChange={setShowEditModal} formData={formData} handleFormChange={handleFormChange} addPassenger={addPassenger} removePassenger={removePassenger} updatePassenger={updatePassenger} addService={addService} removeService={removeService} updateSystem={updateService} calculateTotal={calculateTotal} handleUpdateBooking={handleUpdateBooking} />
         <DeleteBookingDialog open={showDeleteModal} onOpenChange={setShowDeleteModal} currentBooking={currentBooking} deleteReason={deleteReason} setDeleteReason={setDeleteReason} handleDeleteBooking={handleDeleteBooking} />
         <CancelBookingDialog open={showCancelModal} onOpenChange={setShowCancelModal} currentBooking={currentBooking} cancelReason={cancelReason} setCancelReason={setCancelReason} handleCancelBooking={handleCancelBooking} />
         <ViewBookingDialog open={showViewModal} onOpenChange={setShowViewModal} booking={currentBooking} />
-        
+
 
         {/* <Toaster /> */}
       </main>
