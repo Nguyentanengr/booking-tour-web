@@ -1,0 +1,52 @@
+export const mockBookings = [
+  { _id: "b1", user_name: "Nguyễn Văn A", tour_name: "Hà Nội - Hạ Long 3 ngày 2 đêm", total_price: 7500000 },
+  { _id: "b2", user_name: "Trần Văn C", tour_name: "Hà Nội - Đà Nẵng 4 ngày 3 đêm", total_price: 6800000 },
+  { _id: "b3", user_name: "Lê Thị D", tour_name: "Hồ Chí Minh - Phú Quốc 5 ngày 4 đêm", total_price: 13600000 },
+];
+
+export const mockPayments = [
+  {
+    _id: "p1",
+    booking_id: "b1",
+    cancellation_id: undefined,
+    type: "payment",
+    amount: 7500000,
+    payment_method: "bank_transfer",
+    transaction_id: "txn_001",
+    status: "success",
+    created_at: "2025-05-22T10:30:00Z",
+  },
+  {
+    _id: "p2",
+    booking_id: "b2",
+    cancellation_id: undefined,
+    type: "payment",
+    amount: 3400000,
+    payment_method: "credit_card",
+    transaction_id: "txn_002",
+    status: "failed",
+    created_at: "2025-05-21T15:45:00Z",
+  },
+  {
+    _id: "p3",
+    booking_id: "b3",
+    cancellation_id: "c1",
+    type: "refund",
+    amount: 9520000,
+    payment_method: "bank_transfer",
+    transaction_id: "txn_003",
+    status: "success",
+    created_at: "2025-05-20T09:15:00Z",
+  },
+  {
+    _id: "p4",
+    booking_id: "b2",
+    cancellation_id: undefined,
+    type: "payment",
+    amount: 3400000,
+    payment_method: "e_wallet",
+    transaction_id: "txn_004",
+    status: "failed",
+    created_at: "2025-05-19T14:20:00Z",
+  },
+];
