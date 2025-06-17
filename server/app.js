@@ -7,6 +7,7 @@ const fakeJwtRoutes = require('./routes/fakeJwtRoutes');
 const aPaymentRoutes = require('./routes/aPaymentRoutes');
 const authRoutes = require('./routes/authRoutes');    
 
+const aBookingRoutes = require('./routes/aBookingRoutes');
 const log4js = require('log4js');
 
 log4js.configure({
