@@ -1,21 +1,66 @@
 
 
-const { body, query } = require('express-validator');
+const { body, query, param } = require('express-validator');
 
 const validationMiddleware = require('../middleware/validationMiddleware');
 
-// const createTourValidator = [
-//     body('title').notEmpty().withMessage('Title cannot be empty'),
-//     body('title').isLength({ max: 100 }).withMessage('Title took too long'),
-//     body('description').notEmpty().withMessage('Description cannot be empty'),
-//     body('description').isLength({ max: 255 }).withMessage('Description took too long'),
-//     body('services').isArray({ min: 1 }).withMessage('Services cannot be empty'),
-//     body('departurePoint').notEmpty().withMessage('Departure point cannot be empty'),
-//     body('destination').notEmpty().withMessage('Destination cannot be empty'),
-//     body('price').isNumeric().withMessage('Price must be a number'),
-//     body('price').isInt({ min: 0 }).withMessage('Price cannot be negative'),
-//     validationMiddleware,
-// ];
+const createPaymentValidator = [
+    // booking_id: Bắt buộc, phải là ObjectId hợp lệ, và phải tồn tại trong DB
+    body('booking_id')
+        .notEmpty().withMessage('Booking Id cannot be empty.')
+        .isMongoId().withMessage('Booking Id is invalid.'),
+
+    // type: Bắt buộc, chỉ được là 'payment' hoặc 'refund'
+    body('type')
+        .notEmpty().withMessage('Type cannot be empty.')
+        .isIn(['payment', 'refund']).withMessage('Type must be either "payment" or "refund".'),
+
+    // amount: Bắt buộc, phải là số, tối thiểu 1000
+    body('amount')
+        .notEmpty().withMessage('Amount cannot be empty.')
+        .isNumeric().withMessage('Amount must be a number.')
+        .toFloat() // Chuyển đổi sang số float
+        .isInt({ min: 1000 }).withMessage('Amount must be at least 1000.'),
+
+    // payment_method: Bắt buộc, chỉ được là một trong các phương thức đã định nghĩa
+    body('payment_method')
+        .notEmpty().withMessage('Payment method cannot be empty.')
+        .isIn(['bank_transfer', 'credit_card', 'e_wallet', 'cash']).withMessage('Payment method must be one of: bank_transfer, credit_card, e_wallet, cash.'),
+
+    // status: Bắt buộc, chỉ được là 'success' hoặc 'failed'
+    body('status')
+        .notEmpty().withMessage('Status cannot be empty.')
+        .isIn(['success', 'failed']).withMessage('Status must be either "success" or "failed".'),
+
+    validationMiddleware,
+];
+
+const updatePaymentValidator = [
+    // Validate ID từ params
+    param('id')
+        .notEmpty().withMessage('Payment ID cannot be empty.')
+        .isMongoId().withMessage('Payment ID is invalid.'),
+
+    // Các trường khác đều là optional
+    body('booking_id')
+        .optional()
+        .isMongoId().withMessage('Booking ID is invalid.'),
+    body('type')
+        .optional()
+        .isIn(['payment', 'refund']).withMessage('Type must be either "payment" or "refund".'),
+    body('amount')
+        .optional()
+        .isNumeric().withMessage('Amount must be a number.')
+        .toFloat()
+        .isInt({ min: 1000 }).withMessage('Amount must be at least 1000.'),
+    body('payment_method')
+        .optional()
+        .isIn(['bank_transfer', 'credit_card', 'e_wallet', 'cash']).withMessage('Payment method must be one of: bank_transfer, credit_card, e_wallet, cash.'),
+    body('status')
+        .optional()
+        .isIn(['success', 'failed']).withMessage('Status must be either "success" or "failed".'),
+    validationMiddleware,
+];
 
 const getPaymentValidator = [
     query('type')
@@ -56,4 +101,9 @@ const getStatsValidator = [ // statistics payment
 ];
 
 
-module.exports = { getPaymentValidator, getStatsValidator };
+module.exports = { 
+    getPaymentValidator, 
+    getStatsValidator,
+    createPaymentValidator,
+    updatePaymentValidator,
+ };
