@@ -52,7 +52,7 @@ export default function Payment() {
     amount: 0,
     payment_method: "",
     transaction_id: "",
-    status: "pending",
+    status: "success",
   });
 
   useEffect(() => {
@@ -167,7 +167,7 @@ export default function Payment() {
       amount: 0,
       payment_method: "",
       transaction_id: "",
-      status: "pending",
+      status: "success",
     });
     setCurrentPayment(null);
   };
@@ -354,7 +354,6 @@ export default function Payment() {
               <SelectContent>
                 <SelectItem value="all">Tất cả trạng thái</SelectItem>
                 <SelectItem value="success">Thành công</SelectItem>
-                <SelectItem value="pending">Đang chờ</SelectItem>
                 <SelectItem value="failed">Thất bại</SelectItem>
               </SelectContent>
             </Select>

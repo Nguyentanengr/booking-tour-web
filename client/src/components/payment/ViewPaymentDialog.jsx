@@ -72,10 +72,6 @@ export default function ViewPaymentDialog({
                   <p className="text-sm">{currentPayment.booking_id || "N/A"}</p>
                 </div>
                 <div>
-                  <Label className="text-sm font-medium text-gray-500">Cancellation ID</Label>
-                  <p className="text-sm">{currentPayment.cancellation_id || "N/A"}</p>
-                </div>
-                <div>
                   <Label className="text-sm font-medium text-gray-500">Ngày tạo</Label>
                   <p className="text-sm">{formatDate(currentPayment.created_at)}</p>
                 </div>

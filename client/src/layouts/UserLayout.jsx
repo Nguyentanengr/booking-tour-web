@@ -6,7 +6,7 @@ import { Outlet } from 'react-router-dom';
 
 const UserLayout = () => {
   return (
-    <div classnName="bg-white">
+    <div className="bg-white">
       <UserHeader />
       <main className="min-h-screen">
         <Outlet /> {/* Đây là nơi nội dung động sẽ hiển thị */}
