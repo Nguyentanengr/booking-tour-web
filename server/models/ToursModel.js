@@ -51,4 +51,20 @@ const tourSchema = new mongoose.Schema({
 
 tourSchema.index({ name: 1 });
 
+<<<<<<< HEAD
+=======
+// Hook để hash mật khẩu
+userSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) return next();
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+});
+
+// Phương thức so sánh mật khẩu
+userSchema.methods.comparePassword = async function (candidatePassword) {
+    return await bcrypt.compare(candidatePassword, this.password);
+};
+
+>>>>>>> origin/BE_DangNhap_DangKy1
 module.exports = mongoose.model('Tour', tourSchema);
