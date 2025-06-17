@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from 'sonner';
-
+import authService from "../../services/authService";
 
 export default function RegisterPage() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     fullName: "",
     gender: "male",
@@ -16,6 +18,8 @@ export default function RegisterPage() {
     password: "",
     confirmPassword: "",
   });
+
+  const [loading, setLoading] = useState(false);
 
   // Hàm kiểm tra xem tất cả các trường đã được điền đầy đủ chưa
   const isFormValid = () => {
@@ -43,18 +47,36 @@ export default function RegisterPage() {
     });
   };
 
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Kiểm tra mật khẩu và xác nhận mật khẩu
     if (formData.password !== formData.confirmPassword) {
-      toast.error("Mật khẩu và xác nhận mật khẩu không khớp!", {
-         duration: 2000
-      });
-      return;
+        toast.error("Mật khẩu và xác nhận mật khẩu không khớp!");
+        return;
     }
-    // Xử lý đăng ký
-    console.log(formData);
+    setLoading(true);
+
+    const userData = {
+        full_name: formData.fullName,
+        email: formData.email,
+        phone_number: formData.phone,
+        password: formData.password,
+        gender: formData.gender,
+    };
+
+    try {
+        const response = await authService.register(userData);
+        toast.success(response.data.message || "Đăng ký thành công! Vui lòng đăng nhập.");
+        setTimeout(() => {
+            // Bây giờ hàm này sẽ hoạt động chính xác
+            navigate('/dang-nhap');
+        }, 2000);
+    } catch (err) {
+        // Block này của bạn đã chính xác
+        const errorMessage = err.response?.data?.error?.[0]?.msg || err.response?.data?.error || "Đăng ký thất bại. Vui lòng thử lại.";
+        toast.error(errorMessage);
+    } finally {
+        setLoading(false);
+    }
   };
 
   return (
@@ -149,8 +171,8 @@ export default function RegisterPage() {
             />
           </div>
 
-          <Button type="submit" className="w-full bg-blue-600 text-white hover:bg-blue-700" disabled={!isFormValid()}>
-            Đăng ký
+          <Button type="submit" className="w-full bg-blue-600 text-white hover:bg-blue-700" disabled={!isFormValid() || loading}>
+            {loading ? 'Đang xử lý...' : 'Đăng ký'}
           </Button>
         </form>
 

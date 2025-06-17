@@ -1,24 +1,18 @@
+// server/models/Admin.js
 const mongoose = require('mongoose');
-const {normalizeVieText} = require("../utils/normalize");
 const bcrypt = require('bcryptjs');
-
 
 const adminSchema = new mongoose.Schema({
     full_name: { type: String, required: true },
     phone_number: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true }, // Mật khẩu không được trả về mặc định
+    password: { type: String, required: true, select: false }, // Mật khẩu không được trả về mặc định
     avatar_url: { type: String },
-    resetPasswordToken: String,
-    resetPasswordExpires: Date,
     date_of_birth: { type: Date },
     gender: { type: String },
     role: { type: String, default: 'admin' }, // Vai trò mặc định
     status: { type: String, default: 'active' },
 }, { timestamps: true });
-
-// Tạo index cho trường full_name để tìm kiếm nhanh hơn
-adminSchema.index({ full_name: 1 });
 
 // Hook để hash mật khẩu trước khi lưu
 adminSchema.pre('save', async function (next) {
@@ -32,6 +26,5 @@ adminSchema.pre('save', async function (next) {
 adminSchema.methods.comparePassword = async function (candidatePassword) {
     return await bcrypt.compare(candidatePassword, this.password);
 };
-
 
 module.exports = mongoose.model('Admin', adminSchema);
