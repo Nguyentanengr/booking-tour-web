@@ -56,9 +56,9 @@ export default function RegisterPage() {
     setLoading(true);
 
     const userData = {
-        full_name: formData.fullName,
+        fullName: formData.fullName,
         email: formData.email,
-        phone_number: formData.phone,
+        phoneNumber: formData.phone,
         password: formData.password,
         gender: formData.gender,
     };

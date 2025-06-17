@@ -1,17 +1,17 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
-const User = require('../models/User');
-const Admin = require('../models/Admin'); // Thêm model Admin
+const usersModel = require('./models/usersModel');
+const adminsModel = require('./models/adminsModel'); // Thêm model adminsModel
 
 /**
  * ======================================================================================
- * CẤU HÌNH STRATEGY CHO USER - Chỉ dành cho đăng nhập/đăng ký của USER qua Mạng Xã Hội
- * Admin KHÔNG sử dụng luồng này.
+ * CẤU HÌNH STRATEGY CHO usersModel - Chỉ dành cho đăng nhập/đăng ký của usersModel qua Mạng Xã Hội
+ * adminsModel KHÔNG sử dụng luồng này.
  * ======================================================================================
  */
 
-// --- Google Strategy cho User ---
+// --- Google Strategy cho usersModel ---
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -20,24 +20,24 @@ passport.use(new GoogleStrategy({
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
-      // 1. Tìm user bằng googleId
-      let user = await User.findOne({ googleId: profile.id });
+      // 1. Tìm usersModel bằng googleId
+      let usersModel = await usersModel.findOne({ googleId: profile.id });
 
-      if (user) {
-        return done(null, user);
+      if (usersModel) {
+        return done(null, usersModel);
       }
 
       // 2. Nếu không có, tìm bằng email để liên kết tài khoản
-      user = await User.findOne({ email: profile.emails[0].value });
-      if (user) {
-        user.googleId = profile.id;
-        user.avatar_url = user.avatar_url || profile.photos[0].value; // Cập nhật avatar nếu chưa có
-        await user.save();
-        return done(null, user);
+      usersModel = await usersModel.findOne({ email: profile.emails[0].value });
+      if (usersModel) {
+        usersModel.googleId = profile.id;
+        usersModel.avatar_url = usersModel.avatar_url || profile.photos[0].value; // Cập nhật avatar nếu chưa có
+        await usersModel.save();
+        return done(null, usersModel);
       }
       
-      // 3. Nếu không có user nào, tạo mới
-      const newUser = new User({
+      // 3. Nếu không có usersModel nào, tạo mới
+      const newusersModel = new usersModel({
           googleId: profile.id,
           full_name: profile.displayName,
           email: profile.emails[0].value,
@@ -45,9 +45,9 @@ passport.use(new GoogleStrategy({
           password: 'social_login_placeholder' // Mật khẩu tạm, không dùng để đăng nhập
       });
 
-      // Bỏ qua yêu cầu mật khẩu khi lưu user từ social
-      await newUser.save({ validateBeforeSave: false }); 
-      return done(null, newUser);
+      // Bỏ qua yêu cầu mật khẩu khi lưu usersModel từ social
+      await newusersModel.save({ validateBeforeSave: false }); 
+      return done(null, newusersModel);
 
     } catch (err) {
       return done(err, false);
@@ -55,7 +55,7 @@ passport.use(new GoogleStrategy({
   }
 ));
 
-// --- Facebook Strategy cho User ---
+// --- Facebook Strategy cho usersModel ---
 passport.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_APP_ID,
     clientSecret: process.env.FACEBOOK_APP_SECRET,
@@ -64,26 +64,26 @@ passport.use(new FacebookStrategy({
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
-      // 1. Tìm user bằng facebookId
-      let user = await User.findOne({ facebookId: profile.id });
+      // 1. Tìm usersModel bằng facebookId
+      let usersModel = await usersModel.findOne({ facebookId: profile.id });
 
-      if (user) {
-        return done(null, user);
+      if (usersModel) {
+        return done(null, usersModel);
       }
 
       // 2. Tìm bằng email để liên kết
       if (profile.emails && profile.emails[0] && profile.emails[0].value) {
-        user = await User.findOne({ email: profile.emails[0].value });
-        if (user) {
-          user.facebookId = profile.id;
-          user.avatar_url = user.avatar_url || profile.photos[0].value;
-          await user.save();
-          return done(null, user);
+        usersModel = await usersModel.findOne({ email: profile.emails[0].value });
+        if (usersModel) {
+          usersModel.facebookId = profile.id;
+          usersModel.avatar_url = usersModel.avatar_url || profile.photos[0].value;
+          await usersModel.save();
+          return done(null, usersModel);
         }
       }
 
-      // 3. Tạo user mới
-      const newUser = new User({
+      // 3. Tạo usersModel mới
+      const newusersModel = new usersModel({
         facebookId: profile.id,
         full_name: profile.displayName,
         // Một số tài khoản FB không trả về email, cần xử lý trường hợp này
@@ -92,8 +92,8 @@ passport.use(new FacebookStrategy({
         password: 'social_login_placeholder'
       });
       
-      await newUser.save({ validateBeforeSave: false });
-      return done(null, newUser);
+      await newusersModel.save({ validateBeforeSave: false });
+      return done(null, newusersModel);
     } catch (err) {
       return done(err, false);
     }
@@ -103,28 +103,28 @@ passport.use(new FacebookStrategy({
 
 /**
  * ======================================================================================
- * SERIALIZE & DESERIALIZE - Xử lý cho cả ADMIN và USER
+ * SERIALIZE & DESERIALIZE - Xử lý cho cả adminsModel và usersModel
  * Cần thiết để passport quản lý session đúng cách khi có nhiều loại tài khoản.
  * Nó sẽ lưu role vào session để biết cần tìm trong collection nào khi giải mã.
  * ======================================================================================
  */
 
 // Lưu thông tin vào session
-passport.serializeUser((account, done) => {
-    // account có thể là admin hoặc user
+passport.serializeusersModel((account, done) => {
+    // account có thể là adminsModel hoặc usersModel
     // Lưu một object chứa cả id và role
     done(null, { id: account.id, role: account.role });
 });
 
 // Lấy thông tin từ session ra
-passport.deserializeUser(async (sessionData, done) => {
+passport.deserializeusersModel(async (sessionData, done) => {
     try {
-        if (sessionData.role === 'admin') {
-            const admin = await Admin.findById(sessionData.id);
-            done(null, admin);
-        } else if (sessionData.role === 'user') {
-            const user = await User.findById(sessionData.id);
-            done(null, user);
+        if (sessionData.role === 'adminsModel') {
+            const adminsModel = await adminsModel.findById(sessionData.id);
+            done(null, adminsModel);
+        } else if (sessionData.role === 'usersModel') {
+            const usersModel = await usersModel.findById(sessionData.id);
+            done(null, usersModel);
         } else {
             done(new Error('Role không xác định trong session'), null);
         }

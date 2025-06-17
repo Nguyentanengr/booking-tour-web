@@ -1,20 +1,19 @@
 const mongoose = require('mongoose');
-const {normalizeVieText} = require("../utils/normalize");
 
 const departureSchema = new mongoose.Schema({
-    tour_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Tour', required: true },
-    expiration_date: { type: Date, required: true },
-    departure_date: { type: Date, required: true },
-    return_date: { type: Date, required: true },
+    tourId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tour', required: true },
+    expirationDate: { type: Date, required: true },
+    departureDate: { type: Date, required: true },
+    returnDate: { type: Date, required: true },
     prices: {
         adult: { type: Number, required: true },
         child: { type: Number },
         senior: { type: Number }
     },
-    available_slots: { type: Number, required: true },
+    availableSlots: { type: Number, required: true },
     status: { type: String, required: true },
-    created_by: {
-        admin_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', required: true },
+    createdBy: {
+        adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', required: true },
         name: { type: String, required: true }
     },
     createdAt: { type: Date, default: Date.now },
@@ -22,6 +21,6 @@ const departureSchema = new mongoose.Schema({
     deletedAt: { type: Date, default: null }
 });
 
-departureSchema.index({ tour_id: 1 });
+departureSchema.index({ tourId: 1 });
 
 module.exports = mongoose.model('Departure', departureSchema);

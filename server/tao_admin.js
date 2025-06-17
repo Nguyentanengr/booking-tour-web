@@ -1,7 +1,7 @@
 // booking-tour-web - Copy/server/tao_admin.js
 
 const mongoose = require('mongoose');
-const AdminsModel = require('./models/AdminsModel.js');
+const adminsModel = require('/models/adminsModel');
 const connectDB = require('./configs/db');
 require('dotenv').config();
 
@@ -15,14 +15,14 @@ const createAdmin = async () => {
         const adminPassword = '123123123'; // <-- Đặt mật khẩu bạn muốn ở đây
         // ======================================================
 
-        const existingAdmin = await AdminsModel.findOne({ email: adminEmail });
+        const existingAdmin = await adminsModel.findOne({ email: adminEmail });
         if (existingAdmin) {
             console.log(`❌ Lỗi: Admin với email "${adminEmail}" đã tồn tại! Vui lòng xóa thủ công trong database hoặc đổi email khác.`);
             return;
         }
 
         // Tạo admin mới với mật khẩu dạng chữ
-        const newAdmin = new AdminsModel({
+        const newAdmin = new adminsModel({
             full_name: 'Admin dep trai',
             email: adminEmail,
             password: adminPassword, // Cung cấp mật khẩu dạng chữ

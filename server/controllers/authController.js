@@ -1,6 +1,6 @@
 // booking-tour-web - Copy/server/controllers/authController.js
-const AdminsModel = require('../models/AdminsModel');
-const UsersModel = require('../models/UsersModel');
+const adminsModel = require('./models/adminsModel');
+const usersModel = require('./models/usersModel');
 const { generateTokens, verifyRefreshToken } = require('../utils/jwt');
 const { successResponse, errorResponse } = require('../utils/response');
 const bcrypt = require('bcryptjs');
@@ -12,11 +12,11 @@ const nodemailer = require('nodemailer');
 exports.login = async (req, res) => {
     const { email, password } = req.body;
     try {
-        let user = await AdminsModel.findOne({ email });
+        let user = await adminsModel.findOne({ email });
         let role = 'admin';
 
         if (!user) {
-            user = await UsersModel.findOne({ email });
+            user = await usersModel.findOne({ email });
             role = 'user';
         }
 
@@ -36,13 +36,13 @@ exports.register = async (req, res) => {
     // Thêm 'gender' vào
     const { full_name, email, password, phone_number, gender } = req.body;
     try {
-        let user = await UsersModel.findOne({ email });
+        let user = await usersModel.findOne({ email });
         if (user) {
             return errorResponse(res, 'Email đã được sử dụng.', 400);
         }
         
         // Thêm 'gender' và 'status' khi tạo user mới
-        user = new UsersModel({ full_name, email, password, phone_number, gender, status: 'active' });
+        user = new usersModel({ full_name, email, password, phone_number, gender, status: 'active' });
         await user.save();
 
         successResponse(res, { user: { _id: user._id, name: user.full_name, email: user.email } }, 'Đăng ký thành công.', 201);
@@ -58,7 +58,7 @@ exports.forgotPassword = async (req, res) => {
     const { email } = req.body;
     try {
         // 1. Tìm người dùng trong cả hai collection
-        const user = await AdminsModel.findOne({ email }) || await UsersModel.findOne({ email });
+        const user = await adminsModel.findOne({ email }) || await usersModel.findOne({ email });
         if (!user) {
             return errorResponse(res, 'Người dùng với email này không tồn tại.', 404);
         }
@@ -108,7 +108,7 @@ exports.forgotPassword = async (req, res) => {
 exports.verifyOtp = async (req, res) => {
     const { email, otp } = req.body;
     try {
-        const user = await AdminsModel.findOne({ email, resetPasswordExpires: { $gt: Date.now() } }) || await UsersModel.findOne({ email, resetPasswordExpires: { $gt: Date.now() } });
+        const user = await adminsModel.findOne({ email, resetPasswordExpires: { $gt: Date.now() } }) || await usersModel.findOne({ email, resetPasswordExpires: { $gt: Date.now() } });
 
         if (!user || !user.resetPasswordToken || !await bcrypt.compare(otp, user.resetPasswordToken)) {
             return errorResponse(res, 'OTP không hợp lệ hoặc đã hết hạn.', 400);
@@ -124,7 +124,7 @@ exports.verifyOtp = async (req, res) => {
 exports.resetPassword = async (req, res) => {
     const { email, otp, newPassword } = req.body;
     try {
-        const user = await AdminsModel.findOne({ email, resetPasswordExpires: { $gt: Date.now() } }) || await UsersModel.findOne({ email, resetPasswordExpires: { $gt: Date.now() } });
+        const user = await adminsModel.findOne({ email, resetPasswordExpires: { $gt: Date.now() } }) || await usersModel.findOne({ email, resetPasswordExpires: { $gt: Date.now() } });
 
         if (!user || !user.resetPasswordToken || !await bcrypt.compare(otp, user.resetPasswordToken)) {
             return errorResponse(res, 'OTP không hợp lệ hoặc đã hết hạn. Vui lòng thử lại.', 400);
