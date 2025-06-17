@@ -1,12 +1,12 @@
+// models/review.model.js
 const mongoose = require('mongoose');
-const {normalizeVieText} = require("../utils/normalize");
 
 const reviewSchema = new mongoose.Schema({
-    tour_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Tour', required: true },
+    tourId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tour', required: true },
     user: {
-        user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
         name: { type: String, required: true },
-        avatar_url: { type: String }
+        avatarUrl: { type: String }
     },
     rating: { type: Number, required: true },
     comment: { type: String, required: true },
@@ -16,6 +16,6 @@ const reviewSchema = new mongoose.Schema({
     deletedAt: { type: Date, default: null }
 });
 
-reviewSchema.index({ tour_id: 1 });
+reviewSchema.index({ tourId: 1 });
 
 module.exports = mongoose.model('Review', reviewSchema);

@@ -1,9 +1,9 @@
+// models/notification.model.js
 const mongoose = require('mongoose');
-const {normalizeVieText} = require("../utils/normalize");
 
 const notificationSchema = new mongoose.Schema({
-    recipient_type: { type: String, required: true },
-    recipient_id: { type: mongoose.Schema.Types.ObjectId, required: true },
+    recipientType: { type: String, required: true, enum: ['User', 'Admin'] },
+    recipientId: { type: mongoose.Schema.Types.ObjectId, required: true, refPath: 'recipientType' },
     type: { type: String, required: true },
     title: { type: String, required: true },
     message: { type: String, required: true },
@@ -13,6 +13,6 @@ const notificationSchema = new mongoose.Schema({
     deletedAt: { type: Date, default: null }
 });
 
-notificationSchema.index({ title: 1 });
+notificationSchema.index({ recipientId: 1, status: 1 });
 
 module.exports = mongoose.model('Notification', notificationSchema);

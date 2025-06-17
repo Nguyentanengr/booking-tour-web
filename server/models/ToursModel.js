@@ -1,8 +1,8 @@
+// models/tour.model.js
 const mongoose = require('mongoose');
-const {normalizeVieText} = require("../utils/normalize");
 
 const tourSchema = new mongoose.Schema({
-    tour_code: { type: String, required: true },
+    tourCode: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     images: [{ type: String }],
     description: { type: String, required: true },
@@ -19,29 +19,29 @@ const tourSchema = new mongoose.Schema({
         refund: { type: String }
     },
     duration: { type: String, required: true },
-    starting_province: { type: String },
-    destination_province: { type: String },
-    region: { type: String },
+    startingProvince: { type: String, ref: 'Province' },
+    destinationProvince: { type: String, ref: 'Province' },
+    region: { type: String, ref: 'Region' },
     transportation: { type: String },
-    additional_services: [{
-        service_id: { type: String, required: true },
+    additionalServices: [{
+        serviceId: { type: String, required: true },
         type: { type: String },
         name: { type: String, required: true },
         price: { type: Number, required: true }
     }],
-    representative_price: {
+    representativePrice: {
         adult: { type: Number, required: true },
-        discounted_price: { type: Number }
+        discountedPrice: { type: Number }
     },
-    departure_summary: [{
-        departure_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Departure', required: true },
-        departure_date: { type: Date, required: true }
+    departureSummary: [{
+        departureId: { type: mongoose.Schema.Types.ObjectId, ref: 'Departure', required: true },
+        departureDate: { type: Date, required: true }
     }],
-    average_rating: { type: Number },
-    total_slots_booked: { type: Number, default: 0 },
-    is_bestseller: { type: Boolean, default: false },
-    created_by: {
-        admin_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', required: true },
+    averageRating: { type: Number, default: 0 },
+    totalSlotsBooked: { type: Number, default: 0 },
+    isBestseller: { type: Boolean, default: false },
+    createdBy: {
+        adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', required: true },
         name: { type: String, required: true }
     },
     createdAt: { type: Date, default: Date.now },
@@ -49,6 +49,6 @@ const tourSchema = new mongoose.Schema({
     deletedAt: { type: Date, default: null }
 });
 
-tourSchema.index({ name: 1 });
+tourSchema.index({ name: 'text', tourCode: 'text' });
 
 module.exports = mongoose.model('Tour', tourSchema);

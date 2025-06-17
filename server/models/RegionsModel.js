@@ -1,5 +1,5 @@
+// models/region.model.js
 const mongoose = require('mongoose');
-const {normalizeVieText} = require("../utils/normalize");
 
 const regionSchema = new mongoose.Schema({
     _id: { type: String, required: true },
