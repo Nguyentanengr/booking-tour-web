@@ -4,6 +4,7 @@ import HomePage from "./pages/user/HomePage"
 import LoginPage from "./pages/user/LoginPage";
 import RegisterPage from "./pages/user/RegisterPage";
 import ForgotPasswordPage from "./pages/user/ForgotPasswordPage";
+import MyToursPage from "./pages/user/MyToursPage";
 import ProfilePage from "./pages/user/ProfilePage";
 import ContactPage from "./pages/user/ContactPage";
 import DashboardLayout from "./layouts/DashboardLayout";
@@ -30,6 +31,7 @@ const RouterConfig = () => (
       <Route path = "/quen-mat-khau" element = {<ForgotPasswordPage/>} />
       <Route path="/lien-he" element={< ContactPage/>} />
       <Route path="/tai-khoan" element={<ProfilePage />} />
+      <Route path="/tour-cua-toi" element={<MyToursPage />} />
     </Route>
     <Route path="/dashboard" element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
       <Route path="manage-tours" element={<ManageTours />} />
