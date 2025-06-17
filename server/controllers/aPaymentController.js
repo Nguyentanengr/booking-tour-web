@@ -273,8 +273,151 @@ const getPaymentById = async (req, res) => {
     }
 };
 
+const createPayment = async (req, res) => {
+    try {
+        const { booking_id, type, amount, payment_method, transaction_id, status } = req.body;
+        logger.info('Attempting to create a new payment:', { booking_id, type, amount, payment_method, transaction_id, status });
+
+        // --- Bắt đầu kiểm tra sự tồn tại của Booking ID ---
+        const existingBooking = await Booking.findOne({
+            _id: booking_id,
+            deletedAt: null // Đảm bảo booking chưa bị xóa mềm
+        });
+
+        if (!existingBooking || existingBooking.deletedAt !== null) {
+            logger.warn(`Booking ID not found or already deleted: ${booking_id}`);
+            return errorResponse(res, 'Booking ID not found or already deleted', 404,);
+        }
+        // --- Kết thúc kiểm tra sự tồn tại của Booking ID ---
+
+        // Tạo đối tượng payment mới
+        const newPayment = new Payment({
+            bookingId: new mongoose.Types.ObjectId(booking_id), // Chuyển đổi sang ObjectId
+            type,
+            amount,
+            paymentMethod: payment_method,
+            transactionId: transaction_id || null, // Đảm bảo là null nếu không có
+            status,
+            createdAt: new Date(),
+        });
+
+        const savedPayment = await newPayment.save();
+        logger.info(`Payment created successfully with ID: ${savedPayment._id}`);
+
+        successResponse(res, savedPayment, 201);
+
+    } catch (error) {
+        logger.error('Error creating payment: ', error);
+        // Middleware xử lý lỗi validation từ express-validator sẽ bắt các lỗi về định dạng
+        // Các lỗi khác (như lỗi DB, lỗi logic không nằm trong validator) sẽ được bắt ở đây
+        errorResponse(res, 'Error while creating payment ' + error.message, 500);
+    }
+};
+
+const updatePayment = async (req, res) => {
+    try {
+        const { id } = req.params; // Lấy ID của payment cần cập nhật từ params
+        const { booking_id, type, amount, payment_method, transaction_id, status } = req.body;
+
+        logger.info(`Attempting to update payment with ID: ${id}`, { booking_id, type, amount, payment_method, transaction_id, status });
+
+        // 1. Kiểm tra định dạng ID của payment
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            logger.warn(`Invalid Payment ID format for update: ${id}`);
+            return errorResponse(res, 'ID giao dịch không hợp lệ.', 400, 'INVALID_PAYMENT_ID');
+        }
+
+        const objectPaymentId = new mongoose.Types.ObjectId(id);
+
+        // 2. Kiểm tra sự tồn tại của payment
+        const existingPayment = await Payment.findOne({ _id: objectPaymentId, deletedAt: null });
+
+        if (!existingPayment) {
+            logger.warn(`Payment with ID ${id} not found or already deleted for update.`);
+            return errorResponse(res, 'Không tìm thấy giao dịch hoặc đã bị xóa.', 404, 'PAYMENT_NOT_FOUND');
+        }
+
+        // 3. Kiểm tra sự tồn tại của Booking ID (nếu có thay đổi hoặc là bắt buộc)
+        // Nếu booking_id được cung cấp và khác với bookingId hiện tại của payment
+        if (booking_id && String(existingPayment.bookingId) !== booking_id) {
+            const existingBooking = await Booking.findOne({
+                _id: booking_id,
+                deletedAt: null // Đảm bảo booking chưa bị xóa mềm
+            });
+
+            if (!existingBooking) {
+                logger.warn(`Provided Booking ID not found or already deleted: ${booking_id}`);
+                return errorResponse(res, 'Booking ID không tồn tại hoặc đã bị xóa.', 404, 'BOOKING_NOT_FOUND');
+            }
+        }
+
+        // 4. Cập nhật thông tin payment
+        existingPayment.bookingId = new mongoose.Types.ObjectId(booking_id || existingPayment.bookingId); // Cập nhật nếu có, nếu không thì giữ nguyên
+        existingPayment.type = type || existingPayment.type;
+        existingPayment.amount = amount || existingPayment.amount;
+        existingPayment.paymentMethod = payment_method || existingPayment.paymentMethod;
+        existingPayment.status = status || existingPayment.status;
+        existingPayment.updatedAt = new Date(); // Cập nhật thời gian cập nhật
+
+        // Xử lý transactionId: Nếu payment_method là 'cash', transactionId có thể là null
+        if (payment_method === 'cash') {
+            existingPayment.transactionId = null;
+        } else {
+            existingPayment.transactionId = transaction_id || existingPayment.transactionId;
+        }
+
+        const updatedPayment = await existingPayment.save();
+        logger.info(`Payment with ID ${updatedPayment._id} updated successfully.`);
+
+        successResponse(res, updatedPayment, 200, 'Cập nhật giao dịch thành công!');
+
+    } catch (error) {
+        logger.error(`Error updating payment with ID ${req.params.id}: `, error);
+        errorResponse(res, 'Lỗi khi cập nhật giao dịch: ' + error.message, 500);
+    }
+};
+
+const deletePayment = async (req, res) => {
+    try {
+        const { id } = req.params; // Lấy ID của payment cần xóa từ params
+
+        logger.info(`Attempting to soft delete payment with ID: ${id}`);
+
+        // 1. Kiểm tra định dạng ID của payment
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            logger.warn(`Invalid Payment ID format for deletion: ${id}`);
+            return errorResponse(res, 'ID giao dịch không hợp lệ.', 400, 'INVALID_PAYMENT_ID');
+        }
+
+        const objectPaymentId = new mongoose.Types.ObjectId(id);
+
+        // 2. Tìm và cập nhật payment
+        // Chúng ta sẽ tìm payment chưa bị xóa và cập nhật deletedAt
+        const result = await Payment.findOneAndUpdate(
+            { _id: objectPaymentId, deletedAt: null }, // Điều kiện tìm kiếm: theo ID và chưa bị xóa
+            { $set: { deletedAt: new Date(), updatedAt: new Date() } }, // Cập nhật deletedAt và updatedAt
+            { new: true } // Trả về tài liệu đã được cập nhật
+        );
+
+        if (!result) {
+            logger.warn(`Payment with ID ${id} not found or already deleted.`);
+            return errorResponse(res, 'Không tìm thấy giao dịch hoặc đã bị xóa.', 404, 'PAYMENT_NOT_FOUND');
+        }
+
+        logger.info(`Payment with ID ${id} soft deleted successfully.`);
+        successResponse(res, null, 200, 'Xóa giao dịch thành công!'); // Không trả về dữ liệu nếu chỉ là xác nhận xóa
+
+    } catch (error) {
+        logger.error(`Error soft deleting payment with ID ${req.params.id}: `, error);
+        errorResponse(res, 'Lỗi khi xóa giao dịch: ' + error.message, 500);
+    }
+};
+
 module.exports = {
     getPayments,
     getStats,
-    getPaymentById
+    getPaymentById,
+    createPayment,
+    updatePayment,
+    deletePayment
 };

@@ -3,7 +3,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react"; // Thêm useRef
+import axios from 'axios'; // Đảm bảo đã cài đặt axios
 
 export default function EditPaymentDialog({
   open,
@@ -11,10 +12,16 @@ export default function EditPaymentDialog({
   formData,
   setFormData,
   handleUpdatePayment,
-  mockBookings,
+  // mockBookings, // Không cần mockBookings nữa vì giờ ta tìm kiếm
   handleFormChange,
 }) {
   const [errors, setErrors] = useState({});
+  const [bookingIdSearchResults, setBookingIdSearchResults] = useState([]); // Chứa chỉ các _id
+  const [bookingIdSearchQuery, setBookingIdSearchQuery] = useState(""); // Query người dùng nhập
+  const [isSearchingBookings, setIsSearchingBookings] = useState(false);
+  const [selectedBookingDisplay, setSelectedBookingDisplay] = useState(""); // Để hiển thị Booking ID đã chọn trong input
+
+  const debounceTimeoutRef = useRef(null);
 
   const formatAmount = (value) => {
     if (value === null || value === undefined || value === "") return "";
@@ -26,9 +33,9 @@ export default function EditPaymentDialog({
   const handleAmountChange = (e) => {
     const input = e.target.value;
     const rawValue = input.replace(/,/g, '');
-    
-    handleFormChange("amount", parseFloat(rawValue) || 0); 
-    
+
+    handleFormChange("amount", parseFloat(rawValue) || 0);
+
     setFormData(prev => ({
       ...prev,
       displayAmount: rawValue === "" ? "" : formatAmount(rawValue)
@@ -44,6 +51,48 @@ export default function EditPaymentDialog({
       }));
     }
   }, [open, formData.amount, setFormData]);
+
+  // Effect để tìm kiếm Booking ID khi người dùng gõ
+  useEffect(() => {
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current);
+    }
+
+    if (bookingIdSearchQuery.length >= 3) { // Bắt đầu tìm kiếm khi có ít nhất 3 ký tự
+      setIsSearchingBookings(true);
+      debounceTimeoutRef.current = setTimeout(async () => {
+        try {
+          const response = await axios.get(`/api/v1/bookings/search-id?query=${bookingIdSearchQuery}`);
+          setBookingIdSearchResults(response.data.data); // response.data.data sẽ chứa mảng các { _id: "..." }
+          setIsSearchingBookings(false);
+        } catch (error) {
+          console.error("Lỗi khi tìm kiếm Booking ID:", error);
+          setBookingIdSearchResults([]);
+          setIsSearchingBookings(false);
+        }
+      }, 300); // Debounce 300ms
+    } else {
+      setBookingIdSearchResults([]); // Xóa kết quả nếu query quá ngắn
+      setIsSearchingBookings(false);
+    }
+    return () => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+    };
+  }, [bookingIdSearchQuery]);
+
+  // Effect để hiển thị Booking ID đã chọn vào input và khởi tạo bookingIdSearchQuery
+  useEffect(() => {
+    if (open && formData.booking_id) {
+      setSelectedBookingDisplay(formData.booking_id);
+      setBookingIdSearchQuery(formData.booking_id); // Khởi tạo query tìm kiếm với booking_id hiện tại khi mở dialog
+    } else if (!open) { // Khi dialog đóng
+      setSelectedBookingDisplay("");
+      setBookingIdSearchQuery(""); // Đặt lại query khi đóng dialog
+    }
+  }, [open, formData.booking_id]);
+
 
   const validateForm = () => {
     const newErrors = {};
@@ -88,8 +137,8 @@ export default function EditPaymentDialog({
 
   const handleSubmit = async () => {
     if (validateForm()) {
-      await handleUpdatePayment();
-      setErrors({}); 
+      await handleUpdatePayment(); // Sử dụng handleUpdatePayment thay vì handleAddPayment
+      setErrors({});
     }
   };
 
@@ -98,6 +147,9 @@ export default function EditPaymentDialog({
       onOpenChange(isOpen);
       if (!isOpen) {
         setErrors({});
+        setBookingIdSearchQuery(""); // Xóa query khi đóng dialog
+        setBookingIdSearchResults([]); // Xóa kết quả khi đóng dialog
+        setSelectedBookingDisplay(""); // Xóa hiển thị khi đóng dialog
       }
     }}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -107,26 +159,48 @@ export default function EditPaymentDialog({
         </DialogHeader>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="edit_booking_id">Booking ID <span className="text-red-500">*</span></Label>
-            <Select
-              value={formData.booking_id || ""}
-              onValueChange={(value) => {
-                handleFormChange("booking_id", value);
+          <div className="space-y-2 relative">
+            <Label htmlFor="edit_booking_id_input">Booking ID <span className="text-red-500">*</span></Label>
+            <Input
+              id="edit_booking_id_input"
+              type="text"
+              // Hiển thị ID đã chọn, hoặc query đang gõ nếu chưa chọn
+              value={formData.booking_id ? selectedBookingDisplay : bookingIdSearchQuery}
+              onChange={(e) => {
+                setBookingIdSearchQuery(e.target.value);
+                // Chỉ xóa booking_id khỏi formData nếu người dùng thực sự thay đổi query
+                // Nếu người dùng chỉ click vào input mà không gõ gì, giữ nguyên booking_id
+                if (e.target.value !== formData.booking_id) {
+                    handleFormChange("booking_id", "");
+                }
                 setErrors(prev => ({ ...prev, booking_id: "" }));
               }}
-            >
-              <SelectTrigger id="edit_booking_id" className={errors.booking_id ? "border-red-500" : ""}>
-                <SelectValue placeholder="Chọn booking" />
-              </SelectTrigger>
-              <SelectContent>
-                {mockBookings.map((booking) => (
-                  <SelectItem key={booking._id} value={booking._id}>
-                    {booking._id} - {booking.user_name}
-                  </SelectItem>
+              placeholder="Nhập Booking ID để tìm kiếm"
+              className={errors.booking_id ? "border-red-500" : ""}
+            />
+            {isSearchingBookings && bookingIdSearchQuery.length >= 3 && (
+                <p className="text-sm text-gray-500 mt-1">Đang tìm kiếm...</p>
+            )}
+            {/* Hiển thị danh sách kết quả tìm kiếm */}
+            {Array.isArray(bookingIdSearchResults) && bookingIdSearchResults.length > 0 && !formData.booking_id && (
+              <div className="absolute z-10 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                {bookingIdSearchResults.map((booking) => (
+                  <div
+                    key={booking._id}
+                    className="p-2 cursor-pointer hover:bg-gray-100"
+                    onClick={() => {
+                      handleFormChange("booking_id", booking._id); // Gán _id vào formData
+                      setSelectedBookingDisplay(booking._id); // Hiển thị _id trong input
+                      setBookingIdSearchResults([]); // Xóa danh sách gợi ý
+                      setBookingIdSearchQuery(booking._id); // Giữ query là _id đã chọn để không re-trigger search ngay
+                      setErrors(prev => ({ ...prev, booking_id: "" }));
+                    }}
+                  >
+                    {booking._id}
+                  </div>
                 ))}
-              </SelectContent>
-            </Select>
+              </div>
+            )}
             {errors.booking_id && <p className="text-red-500 text-sm">{errors.booking_id}</p>}
           </div>
 

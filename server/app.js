@@ -34,6 +34,7 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/tours', tourRoutes);
 app.use('/api/v1/fake-jwt', fakeJwtRoutes);
 app.use('/api/v1/payments', aPaymentRoutes);
+app.use('/api/v1/bookings', aBookingRoutes)
 
 // Xử lý lỗi toàn cục
 app.use(errorMiddleware);

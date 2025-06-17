@@ -7,7 +7,7 @@ const paymentSchema = new mongoose.Schema({
     type: { type: String, required: true },
     amount: { type: Number, required: true },
     paymentMethod: { type: String, required: true },
-    transactionId: { type: String, required: true },
+    transactionId: { type: String, required: false },
     status: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
