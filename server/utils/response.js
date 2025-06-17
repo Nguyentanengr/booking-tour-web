@@ -1,6 +1,7 @@
-const successResponse = (res, data, statusCode = 200) => {
+const successResponse = (res, data, message, statusCode = 200) => {
     return res.status(statusCode).json({
         status: 'success',
+        message, // Thêm message vào response
         data,
         error: null,
         timestamp: new Date().toISOString(),
