@@ -69,27 +69,21 @@ const RouterConfig = () => (
     <Route path="/" element={<UserLayout />}>
       <Route index element={<HomePage />} />
 
-      <Route path = "/dang-nhap" element={<LoginPage />} />
-      <Route path = "/dang-ky" element={<RegisterPage/>} />
-      <Route path = "/quen-mat-khau" element = {<ForgotPasswordPage/>} />
-      <Route path="/lien-he" element={< ContactPage/>} />
-      <Route path="/tai-khoan" element={<ProfilePage />} />
-      <Route path="/danh-sach-tour" element={<ToursPage />} />
-      <Route path="/tour-cua-toi" element={<MyToursPage />} />
-      <Route path="/tour-yeu-thich" element={<FavoriteToursPage />} />
 
       {/* BỌC CÁC ROUTE NÀY BẰNG PublicOnlyRoute */}
       <Route element={<PublicOnlyRoute />}>
         <Route path="/dang-nhap" element={<LoginPage />} />
         <Route path="/dang-ky" element={<RegisterPage />} />
         <Route path="/quen-mat-khau" element={<ForgotPasswordPage />} />
+        <Route path="/lien-he" element={<ContactPage />} />
+        <Route path="/danh-sach-tour" element={<ToursPage />} />
       </Route>
-
-      <Route path="/lien-he" element={<ContactPage />} />
 
       {/* Routes chỉ dành cho người đã đăng nhập */}
       <Route element={<UserPrivateRoute />}>
         <Route path="/tai-khoan" element={<ProfilePage />} />
+          <Route path="/tour-cua-toi" element={<MyToursPage />} />
+          <Route path="/tour-yeu-thich" element={<FavoriteToursPage />} />
       </Route>
 
 
