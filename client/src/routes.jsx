@@ -15,6 +15,10 @@ import Departure from "./pages/Departure";
 import Booking from "./pages/Booking";
 import Payment from "./pages/Payment";
 import CustomersAnalytics from "./pages/CustomersAnalytics";
+import ToursPage from "./pages/user/ToursPage";
+import MyToursPage from "./pages/user/MyToursPage";
+
+
 
 // Simple private route wrapper
 const PrivateRoute = ({ children }) => {
@@ -63,6 +67,14 @@ const RouterConfig = () => (
     <Route path="/" element={<UserLayout />}>
       <Route index element={<HomePage />} />
 
+      <Route path = "/dang-nhap" element={<LoginPage />} />
+      <Route path = "/dang-ky" element={<RegisterPage/>} />
+      <Route path = "/quen-mat-khau" element = {<ForgotPasswordPage/>} />
+      <Route path="/lien-he" element={< ContactPage/>} />
+      <Route path="/tai-khoan" element={<ProfilePage />} />
+      <Route path="/danh-sach-tour" element={<ToursPage />} />
+      <Route path="/tour-cua-toi" element={<MyToursPage />} />
+
       {/* BỌC CÁC ROUTE NÀY BẰNG PublicOnlyRoute */}
       <Route element={<PublicOnlyRoute />}>
         <Route path="/dang-nhap" element={<LoginPage />} />
@@ -76,6 +88,7 @@ const RouterConfig = () => (
       <Route element={<UserPrivateRoute />}>
         <Route path="/tai-khoan" element={<ProfilePage />} />
       </Route>
+
 
     </Route>
 
