@@ -1,13 +1,13 @@
+// models/admin.model.js
 const mongoose = require('mongoose');
-const {normalizeVieText} = require("../utils/normalize");
 
 const adminSchema = new mongoose.Schema({
-    full_name: { type: String, required: true },
-    phone_number: { type: String, required: true },
+    fullName: { type: String, required: true },
+    phoneNumber: { type: String, required: true },
     password: { type: String, required: true },
-    email: { type: String, required: true },
-    avatar_url: { type: String },
-    date_of_birth: { type: Date, required: true },
+    email: { type: String, required: true, unique: true },
+    avatarUrl: { type: String },
+    dateOfBirth: { type: Date, required: true },
     gender: { type: String, required: true },
     role: { type: String, required: true },
     status: { type: String, required: true },
@@ -16,6 +16,6 @@ const adminSchema = new mongoose.Schema({
     deletedAt: { type: Date, default: null }
 });
 
-adminSchema.index({ full_name: 1 });
+adminSchema.index({ fullName: 'text' });
 
 module.exports = mongoose.model('Admin', adminSchema);
