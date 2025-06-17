@@ -100,7 +100,7 @@ export default function ToursPage() {
     searchTerm !== ""
 
   return (
-    <div className="container py-8 px-4 sm:px-6 lg:px-8"> {/* Đã thêm padding ngang */}
+    <div className="container py-8   lg:px-8 w-[1400px] mx-auto"> {/* Đã thêm padding ngang */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Sidebar Filters */}
         <div className="lg:col-span-1">

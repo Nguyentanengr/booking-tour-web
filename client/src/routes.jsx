@@ -16,6 +16,8 @@ import Payment from "./pages/Payment";
 import CustomersAnalytics from "./pages/CustomersAnalytics";
 import ToursPage from "./pages/user/ToursPage";
 import MyToursPage from "./pages/user/MyToursPage";
+import FavoriteToursPage from "./pages/user/FavoriteToursPage";
+
 
 
 
@@ -41,6 +43,7 @@ const RouterConfig = () => (
       <Route path="/tai-khoan" element={<ProfilePage />} />
       <Route path="/danh-sach-tour" element={<ToursPage />} />
       <Route path="/tour-cua-toi" element={<MyToursPage />} />
+      <Route path="/tour-yeu-thich" element={<FavoriteToursPage />} />
 
     </Route>
     <Route path="/admin" element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
