@@ -5,6 +5,7 @@ const errorMiddleware = require('./middleware/errorMiddleware');
 const tourRoutes = require('./routes/tourRoutes');
 const fakeJwtRoutes = require('./routes/fakeJwtRoutes');
 const aPaymentRoutes = require('./routes/aPaymentRoutes');
+const authRoutes = require('./routes/authRoutes');    
 
 const log4js = require('log4js');
 
@@ -29,6 +30,7 @@ connectDB();
 app.use(express.json());
 
 // Routes
+app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/tours', tourRoutes);
 app.use('/api/v1/fake-jwt', fakeJwtRoutes);
 app.use('/api/v1/payments', aPaymentRoutes);

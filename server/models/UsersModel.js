@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     avatarUrl: { type: String },
-    dateOfBirth: { type: Date, required: true },
+    dateOfBirth: { type: Date },
     gender: { type: String, required: true },
     tourHistory: [{
         tourId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tour', required: true },
