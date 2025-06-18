@@ -69,7 +69,6 @@ exports.login = async (req, res) => {
 
 // 2. User Registration
 exports.register = async (req, res) => {
-    // Thêm 'gender' vào
     const {
         fullName,
         email,
@@ -77,23 +76,28 @@ exports.register = async (req, res) => {
         phoneNumber,
         gender
     } = req.body;
+
     try {
-        let user = await usersModel.findOne({
-            email
-        });
+        // Kiểm tra email đã tồn tại chưa
+        let user = await usersModel.findOne({ email });
         if (user) {
             return errorResponse(res, 'Email đã được sử dụng.', 400);
         }
 
-        // Thêm 'gender' và 'status' khi tạo user mới
+        // Hash mật khẩu
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        // Tạo user mới với mật khẩu đã được hash
         user = new usersModel({
             fullName,
             email,
-            password,
+            password: hashedPassword,
             phoneNumber,
             gender,
             status: 'active'
         });
+
         await user.save();
 
         successResponse(res, {
@@ -104,7 +108,6 @@ exports.register = async (req, res) => {
             }
         }, 201);
     } catch (error) {
-        // Thêm console.log để debug tốt hơn
         console.error('Lỗi khi đăng ký:', error);
         errorResponse(res, 'Lỗi server: ' + error.message, 500);
     }

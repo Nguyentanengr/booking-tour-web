@@ -6,6 +6,12 @@ const tourRoutes = require('./routes/tourRoutes');
 const fakeJwtRoutes = require('./routes/fakeJwtRoutes');
 const aPaymentRoutes = require('./routes/aPaymentRoutes');
 const authRoutes = require('./routes/authRoutes');    
+const userRoutes = require('./routes/userRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
+const bookingRoutes = require('./routes/bookingRoutes');
+const aBookingRoutes = require('./routes/aBookingRoutes')
+const provinceRoutes = require('./routes/provinceRoutes');
+const cors = require('cors');
 
 const log4js = require('log4js');
 
@@ -29,12 +35,18 @@ connectDB();
 // Middleware
 app.use(express.json());
 
+// Cho phép mọi origin truy cập
+app.use(cors());
 // Routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/tours', tourRoutes);
 app.use('/api/v1/fake-jwt', fakeJwtRoutes);
 app.use('/api/v1/payments', aPaymentRoutes);
-app.use('/api/v1/bookings', aBookingRoutes)
+app.use('/api/v1/admin/bookings', aBookingRoutes)
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/notifications', notificationRoutes);
+app.use('/api/v1/bookings', bookingRoutes);
+app.use('/api/v1/provinces', provinceRoutes);
 
 // Xử lý lỗi toàn cục
 app.use(errorMiddleware);

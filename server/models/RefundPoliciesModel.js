@@ -12,5 +12,9 @@ const refundPolicySchema = new mongoose.Schema({
 });
 
 refundPolicySchema.index({ daysBeforeDeparture: 1 });
+refundPolicySchema.pre('findOneAndUpdate', function(next) {
+  this.set({ updatedAt: new Date() });
+  next();
+});
 
 module.exports = mongoose.model('RefundPolicy', refundPolicySchema);
