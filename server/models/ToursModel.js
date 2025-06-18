@@ -5,12 +5,12 @@ const tourSchema = new mongoose.Schema({
     tourCode: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     images: [{ type: String }],
-    description: { type: String, required: true },
+    description: { type: String, required: false },
     services: [{ type: String }],
     itinerary: [{
-        order: { type: Number, required: true },
-        title: { type: String, required: true },
-        description: { type: String, required: true }
+        order: { type: Number, required: false },
+        title: { type: String, required: false },
+        description: { type: String, required: false }
     }],
     policies: {
         transportation: { type: String },
@@ -24,25 +24,26 @@ const tourSchema = new mongoose.Schema({
     region: { type: String, ref: 'Region' },
     transportation: { type: String },
     additionalServices: [{
-        serviceId: { type: String, required: true },
+        serviceId: { type: String, required: false },
         type: { type: String },
-        name: { type: String, required: true },
-        price: { type: Number, required: true }
+        name: { type: String, required: false },
+        price: { type: Number, required: false }
     }],
     representativePrice: {
-        adult: { type: Number, required: true },
+        adult: { type: Number, required: false },
         discountedPrice: { type: Number }
     },
     departureSummary: [{
-        departureId: { type: mongoose.Schema.Types.ObjectId, ref: 'Departure', required: true },
-        departureDate: { type: Date, required: true }
+        departureId: { type: mongoose.Schema.Types.ObjectId, ref: 'Departure', required: false },
+        departureDate: { type: Date, required: false }
     }],
     averageRating: { type: Number, default: 0 },
     totalSlotsBooked: { type: Number, default: 0 },
     isBestseller: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: true }, 
     createdBy: {
-        adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', required: true },
-        name: { type: String, required: true }
+        adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', required: false },
+        name: { type: String, required: false }
     },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
