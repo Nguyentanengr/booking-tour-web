@@ -11,4 +11,5 @@ const regionSchema = new mongoose.Schema({
 
 regionSchema.index({ _id: 1 });
 
+
 module.exports = mongoose.model('Region', regionSchema);

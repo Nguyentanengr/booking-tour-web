@@ -33,4 +33,9 @@ const bookingSchema = new mongoose.Schema({
 
 bookingSchema.index({ tourId: 1 });
 
+bookingSchema.pre('findOneAndUpdate', function(next) {
+  this.set({ updatedAt: new Date() });
+  next();
+});
+
 module.exports = mongoose.model('Booking', bookingSchema);

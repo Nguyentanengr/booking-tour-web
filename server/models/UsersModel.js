@@ -25,5 +25,28 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.index({ fullName: 'text' });
+userSchema.pre('save', function(next) {
+  this.updatedAt = Date.now();
+  next();
+});
 
+userSchema.pre('findOneAndUpdate', function(next) {
+  this.set({ updatedAt: new Date() });
+  next();
+});
+
+userSchema.post('findOneAndUpdate', async function(doc, next) {
+    if (doc) {
+        await Review.updateMany(
+            { 'user.userId': doc._id },
+            { $set: { 'user.name': doc.fullName, 'user.avatarUrl': doc.avatarUrl } }
+        );
+
+        await Booking.updateMany(
+            { 'user.userId': doc._id, status: { $ne: 'completed' } },
+            { $set: { 'user.name': doc.fullName, 'user.avatarUrl': doc.avatarUrl } }
+        );
+    }
+    next();
+});
 module.exports = mongoose.model('User', userSchema);

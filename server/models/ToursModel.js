@@ -1,4 +1,3 @@
-// models/tour.model.js
 const mongoose = require('mongoose');
 
 const tourSchema = new mongoose.Schema({
@@ -50,6 +49,9 @@ const tourSchema = new mongoose.Schema({
     deletedAt: { type: Date, default: null }
 });
 
-tourSchema.index({ name: 'text', tourCode: 'text' });
+tourSchema.pre('findOneAndUpdate', function(next) {
+  this.set({ updatedAt: new Date() });
+  next();
+});
 
 module.exports = mongoose.model('Tour', tourSchema);

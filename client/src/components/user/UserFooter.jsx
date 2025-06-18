@@ -1,22 +1,52 @@
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom";
 import { MapPin, Phone, Mail } from "lucide-react";
-
-const regions = [
-  {
-    name: "Miền Bắc",
-    provinces: ["Hà Nội", "Hạ Long", "Sa Pa", "Ninh Bình", "Hà Giang", "Cao Bằng"],
-  },
-  {
-    name: "Miền Trung",
-    provinces: ["Đà Nẵng", "Huế", "Hội An", "Nha Trang", "Quy Nhơn", "Phú Yên"],
-  },
-  {
-    name: "Miền Nam",
-    provinces: ["TP. Hồ Chí Minh", "Vũng Tàu", "Phú Quốc", "Cần Thơ", "Đồng Nai", "An Giang"],
-  },
-]
+import { useState, useEffect } from "react";
+import { provinceService } from "@/services/provinceService"; // Import provinceService
 
 export default function UserFooter() {
+  const [regions, setRegions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchRegions = async () => {
+      try {
+        setIsLoading(true);
+        const data = await provinceService.getProvincesByRegion();
+        setRegions(data);
+      } catch (err) {
+        console.error("Lỗi khi tải dữ liệu vùng miền cho footer:", err);
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRegions();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <footer className="bg-white border-t ">
+        <div className="container py-8 md:py-12 w-[1400px] mx-auto">
+          <div className="text-center text-gray-500">Đang tải thông tin vùng miền...</div>
+        </div>
+      </footer>
+    );
+  }
+
+  if (error) {
+    console.error("Không thể tải dữ liệu vùng miền cho footer từ API.");
+    // Bạn có thể thêm logic hiển thị lỗi cho người dùng ở đây,
+    // hoặc sử dụng dữ liệu fake tĩnh nếu API thất bại.
+    // Ví dụ: return <div>Có lỗi xảy ra khi tải dữ liệu footer.</div>;
+  }
+
+  // Sử dụng dữ liệu từ state `regions` (đã được fetch từ API)
+  // Nếu có lỗi và bạn muốn footer hiển thị trống phần miền, regions sẽ là mảng rỗng ban đầu.
+  const regionsToRender = regions;
+
+
   return (
     <footer className="bg-white border-t ">
       <div className="container py-8 md:py-12 w-[1400px] mx-auto">
@@ -37,23 +67,23 @@ export default function UserFooter() {
           </div>
 
           {/* Các miền */}
-          {regions.map((region) => (
+          {regionsToRender.map((region) => (
             <div key={region.name}>
               <h3 className="text-lg font-semibold mb-3 text-gray-800">{region.name}</h3>
               <ul className="space-y-1.5">
                 {region.provinces.map((province) => (
-                  <li key={province}>
+                  <li key={province.id || province.name || province}> {/* Sử dụng province.id hoặc province.name làm key nếu nó là object, hoặc chính nó nếu là string */}
                     <Link
-                      to={`/diem-den/${province.toLowerCase().replace(/\s+/g, "-")}`}
+                      to={`/danh-sach-tour`}
                       className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
                     >
-                      {province}
+                      {typeof province === 'object' && province !== null ? province.name : province} {/* Hiển thị province.name nếu là object, ngược lại hiển thị province */}
                     </Link>
                   </li>
                 ))}
                 <li className="pt-1">
                   <Link
-                    to={`/diem-den/${region.name.toLowerCase().replace(/\s+/g, "-")}`}
+                    to={`/danh-sach-tour`}
                     className="text-sm text-blue-600 hover:underline font-medium"
                   >
                     Xem tất cả →
@@ -96,7 +126,6 @@ export default function UserFooter() {
               <p className="text-xs text-blue-800 font-medium">Hỗ trợ 24/7</p>
               <p className="text-xs text-blue-600">Luôn sẵn sàng phục vụ bạn</p>
             </div>
-
           </div>
         </div>
 
@@ -115,5 +144,5 @@ export default function UserFooter() {
         </div>
       </div>
     </footer>
-  )
+  );
 }

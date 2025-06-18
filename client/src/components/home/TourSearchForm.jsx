@@ -6,7 +6,7 @@ import { Search } from "lucide-react";
 
 export default function TourSearchForm() {
   return (
-    <section className="container -mt-16 relative z-20 mb-12 w-[1400px] mx-auto">
+    <section className="container -mt-16 relative z-20 mb-12 w-[1400px] mx-auto z-100">
       <div className="bg-white rounded-lg shadow-lg p-6">
         <h2 className="text-xl font-semibold mb-4">Tìm kiếm tour du lịch</h2>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">

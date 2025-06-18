@@ -1,29 +1,58 @@
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MapPin, Calendar, Phone } from "lucide-react";
 
-import { useMyTours } from "@/hooks/useMyTours"; // Adjust path as needed
-import TourCard from "@/components/my-tour/TourCard"; // Adjust path as needed
-import EmptyState from "@/components/my-tour/EmptyState"; // Adjust path as needed
+import React, { useState } from "react"
+import {Link} from "react-router-dom"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { MapPin, Calendar, Phone } from "lucide-react"
+import { Toaster, toast } from "sonner" 
+
+import { useMyTours } from "@/hooks/useMyTours" // Import the custom hook
+import { TourCard } from "@/components/my-tour/TourCard" // Import TourCard component
+import { CancelTourDialog } from "@/components/my-tour/CancelTourDialog" // Import CancelTourDialog
+import { ReviewTourDialog } from "@/components/my-tour/ReviewTourDialog" // Import ReviewTourDialog
 
 export default function MyToursPage() {
-  const { tours, loading, error } = useMyTours();
+  const {
+    myTours,
+    cancelTour,
+    submitReview,
+    isCancelling,
+    isSubmittingReview,
+  } = useMyTours()
+
+  const [showCancelDialog, setShowCancelDialog] = useState(false)
+  const [showReviewDialog, setShowReviewDialog] = useState(false)
+  const [selectedTour, setSelectedTour] = useState(null)
 
   const totalTours =
-    tours.upcoming.length + tours.completed.length + tours.cancelled.length;
+    myTours.upcoming.length + myTours.completed.length + myTours.cancelled.length
 
-  if (loading) {
-    return <div className="container py-8 text-center">Đang tải tour của bạn...</div>;
+  const handleCancelRequest = async (tourId, reason) => {
+    const success = await cancelTour(tourId, reason)
+    if (success) {
+      toast.success("Yêu cầu hủy tour đã được gửi. Chúng tôi sẽ xử lý trong vòng 24h.")
+    } else {
+      toast.error("Có lỗi xảy ra khi gửi yêu cầu hủy tour.")
+    }
+    setShowCancelDialog(false)
+    setSelectedTour(null)
   }
 
-  if (error) {
-    return <div className="container py-8 text-center text-red-500">Đã xảy ra lỗi: {error.message}</div>;
+  const handleSubmitReviewRequest = async (tourId, rating, reviewText, reviewImages) => {
+    const success = await submitReview(tourId, rating, reviewText, reviewImages)
+    if (success) {
+      toast.success("Đánh giá của bạn đã được gửi thành công!")
+    } else {
+      toast.error("Có lỗi xảy ra khi gửi đánh giá.")
+    }
+    setShowReviewDialog(false)
+    setSelectedTour(null)
   }
 
   return (
     <div className="container py-8 w-[1400px] mx-auto">
+      <Toaster position="top-right" richColors /> {/* Add Toaster component */}
       <div className="flex items-center gap-2 mb-6">
         <MapPin className="h-6 w-6 text-blue-600" />
         <h1 className="text-2xl font-bold">My Tour</h1>
@@ -34,68 +63,104 @@ export default function MyToursPage() {
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="upcoming" className="flex items-center gap-2">
             <Calendar size={16} />
-            Sắp tới ({tours.upcoming.length})
+            Sắp tới ({myTours.upcoming.length})
           </TabsTrigger>
           <TabsTrigger value="completed" className="flex items-center gap-2">
             <MapPin size={16} />
-            Đã hoàn thành ({tours.completed.length})
+            Đã hoàn thành ({myTours.completed.length})
           </TabsTrigger>
           <TabsTrigger value="cancelled" className="flex items-center gap-2">
             <Phone size={16} />
-            Đã hủy ({tours.cancelled.length})
+            Đã hủy ({myTours.cancelled.length})
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="upcoming" className="mt-6">
-          {tours.upcoming.length === 0 ? (
-            <EmptyState
-              icon={Calendar}
-              title="Không có tour sắp tới"
-              description="Hãy đặt tour mới để bắt đầu chuyến phiêu lưu"
-              buttonText="Đặt tour ngay"
-              buttonLink="/tours"
-            />
+          {myTours.upcoming.length === 0 ? (
+            <div className="text-center py-12">
+              <Calendar className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+              <h2 className="text-xl font-semibold text-gray-600 mb-2">Không có tour sắp tới</h2>
+              <p className="text-gray-500 mb-6">Hãy đặt tour mới để bắt đầu chuyến phiêu lưu</p>
+              <Link to="/danh-sach-tour">
+                <Button>Đặt tour ngay</Button>
+              </Link>
+            </div>
           ) : (
             <div className="space-y-6">
-              {tours.upcoming.map((tour) => (
-                <TourCard key={tour.id} tour={tour} type="upcoming" />
+              {myTours.upcoming.map((tour) => (
+                <TourCard
+                  key={tour.id}
+                  tour={tour}
+                  onCancelClick={() => {
+                    setSelectedTour(tour)
+                    setShowCancelDialog(true)
+                  }}
+                  type="upcoming"
+                />
               ))}
             </div>
           )}
         </TabsContent>
 
         <TabsContent value="completed" className="mt-6">
-          {tours.completed.length === 0 ? (
-            <EmptyState
-              icon={MapPin}
-              title="Chưa có tour đã hoàn thành"
-              description="Các tour đã hoàn thành sẽ hiển thị ở đây"
-            />
+          {myTours.completed.length === 0 ? (
+            <div className="text-center py-12">
+              <MapPin className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+              <h2 className="text-xl font-semibold text-gray-600 mb-2">Chưa có tour đã hoàn thành</h2>
+              <p className="text-gray-500">Các tour đã hoàn thành sẽ hiển thị ở đây</p>
+            </div>
           ) : (
             <div className="space-y-6">
-              {tours.completed.map((tour) => (
-                <TourCard key={tour.id} tour={tour} type="completed" />
+              {myTours.completed.map((tour) => (
+                <TourCard
+                  key={tour.id}
+                  tour={tour}
+                  onReviewClick={() => {
+                    setSelectedTour(tour)
+                    setShowReviewDialog(true)
+                  }}
+                  type="completed"
+                />
               ))}
             </div>
           )}
         </TabsContent>
 
         <TabsContent value="cancelled" className="mt-6">
-          {tours.cancelled.length === 0 ? (
-            <EmptyState
-              icon={Phone}
-              title="Không có tour đã hủy"
-              description="Các tour đã hủy sẽ hiển thị ở đây"
-            />
+          {myTours.cancelled.length === 0 ? (
+            <div className="text-center py-12">
+              <Phone className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+              <h2 className="text-xl font-semibold text-gray-600 mb-2">Không có tour đã hủy</h2>
+              <p className="text-gray-500">Các tour đã hủy sẽ hiển thị ở đây</p>
+            </div>
           ) : (
             <div className="space-y-6">
-              {tours.cancelled.map((tour) => (
+              {myTours.cancelled.map((tour) => (
                 <TourCard key={tour.id} tour={tour} type="cancelled" />
               ))}
             </div>
           )}
         </TabsContent>
       </Tabs>
+
+      {selectedTour && (
+        <>
+          <CancelTourDialog
+            isOpen={showCancelDialog}
+            onClose={() => setShowCancelDialog(false)}
+            tour={selectedTour}
+            onConfirmCancel={handleCancelRequest}
+            isCancelling={isCancelling}
+          />
+          <ReviewTourDialog
+            isOpen={showReviewDialog}
+            onClose={() => setShowReviewDialog(false)}
+            tour={selectedTour}
+            onSubmitReview={handleSubmitReviewRequest}
+            isSubmitting={isSubmittingReview}
+          />
+        </>
+      )}
     </div>
-  );
+  )
 }

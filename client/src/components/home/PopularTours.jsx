@@ -61,7 +61,7 @@ export default function PopularTours({ popularTours }) {
                       )}
                     </div>
                   </div>
-                  <Link to={`/tours/${tour.id}`}>
+                  <Link to={`/chi-tiet-tour/${tour.id}`}>
                     <Button variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50">
                       Xem chi tiết
                     </Button>
