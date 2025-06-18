@@ -8,7 +8,7 @@ export default function FeaturedDestinations({ regions }) {
   return (
     <section className="container py-12 w-[1400px] mx-auto z-10">
       <h2 className="text-2xl font-bold text-center mb-8">Địa điểm nổi bật</h2>
-      <Tabs defaultValue="mien-nam" className="w-full">
+      <Tabs defaultValue={0} className="w-full">
         <TabsList className="grid w-full grid-cols-3 mb-8">
           {regions.map((region) => (
             <TabsTrigger key={region.id} value={region.id}>

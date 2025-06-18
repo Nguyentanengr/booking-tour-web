@@ -4,7 +4,9 @@ import { vi } from "date-fns/locale"
 import { Button } from "@/components/ui/button"
 import { Star } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
+
 import {Link} from "react-router-dom"
+
 
 
 export function StatusBadge({ status }) {
@@ -120,6 +122,7 @@ export function TourCard({ tour, onCancelClick, onReviewClick, type }) {
                 {type === "completed" && <Button size="sm" className="bg-blue-600 text-white hover:bg-blue-700">Đặt lại</Button>}
                 {type === "cancelled" && <Button size="sm" className="bg-blue-600 text-white hover:bg-blue-700">Đặt lại</Button>}
                 {type === "upcoming" && (
+
                   <Link to="/chi-tiet-tour/1">
                     <Button variant="outline" size="sm">
                     Xem chi tiết

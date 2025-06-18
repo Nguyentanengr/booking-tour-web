@@ -6,6 +6,7 @@ import { ChevronDown } from "lucide-react";
 import DestinationDropdown from "../header/DestinationDropdown";
 import UserMenu from "../header/UserMenu";
 import NotificationMenu from "../header/NotificationMenu";
+
 import { useDispatch } from 'react-redux';
 
 
@@ -14,6 +15,9 @@ const dispatch = useDispatch()
   const [isLoggedIn, setIsLoggedIn] = useState(true); // Giả lập trạng thái đăng nhập
   const handleLogout = () => {
     setIsLoggedIn(false);
+
+
+
     console.log("User logged out");
   };
 

@@ -36,7 +36,7 @@ export default function ViewPaymentDialog({
                 </div>
                 <div>
                   <Label className="text-sm font-medium text-gray-500">Mã giao dịch</Label>
-                  <p className="text-sm font-mono">{currentPayment.transaction_id}</p>
+                  <p className="text-sm font-mono">{currentPayment.transaction_id || "N/A"}</p>
                 </div>
                 <div>
                   <Label className="text-sm font-medium text-gray-500">Loại giao dịch</Label>
@@ -96,7 +96,7 @@ export default function ViewPaymentDialog({
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <Label className="text-sm font-medium text-gray-500">Khách hàng</Label>
-                          <p className="text-sm">{bookingInfo.user_name}</p>
+                          <p className="text-sm">{bookingInfo.username}</p>
                         </div>
                         <div>
                           <Label className="text-sm font-medium text-gray-500">Tour</Label>

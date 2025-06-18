@@ -3,7 +3,10 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/authMiddleware');
 
+
 const { getTourDetails, addReviewToTour, getPopularTours, getToursUser, getTourReviews} = require('../controllers/tourController');
+
+
 
 
 router.get('/', getToursUser); // Lấy danh sách tour (có filter, paginate)

@@ -44,4 +44,4 @@ mongod.lock
 *.bak
 *.pid
 
-.env
+

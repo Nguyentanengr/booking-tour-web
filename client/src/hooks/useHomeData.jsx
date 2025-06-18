@@ -15,9 +15,11 @@ export const useHomeData = () => {
       try {
         setLoading(true);
         const data = await provinceService.getProvincesByRegion();
+
         // const popularTours = await tourService.getPopularTours();
         setRegions(initialRegions); 
         setPopularTours(initialPopularTours); 
+
       } catch (err) {
         setError("Failed to load data."); // Set a user-friendly error message
         console.error("Error fetching home data:", err);
