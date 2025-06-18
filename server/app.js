@@ -12,6 +12,7 @@ const aOverviewRoutes = require('./routes/aOverviewRoutes');
 const aTourRoutes = require('./routes/aTourRoutes');
 
 const log4js = require('log4js');
+const cors = require('cors');
 
 log4js.configure({
   appenders: {
@@ -27,6 +28,7 @@ const logger = log4js.getLogger();
 
 
 const app = express();
+app.use(cors());
 
 connectDB();
 
