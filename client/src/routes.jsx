@@ -19,6 +19,9 @@ import ToursPage from "./pages/user/ToursPage";
 import MyToursPage from "./pages/user/MyToursPage";
 import FavoriteToursPage from "./pages/user/FavoriteToursPage";
 import TourDetailPage from "./pages/user/TourDetailPage";
+import BookingPage from "./pages/user/BookingPage";
+
+
 
 
 
@@ -79,6 +82,7 @@ const RouterConfig = () => (
         <Route path="/lien-he" element={<ContactPage />} />
         <Route path="/danh-sach-tour" element={<ToursPage />} />
         <Route path="/chi-tiet-tour/:tourId" element={<TourDetailPage />} />
+        <Route path="/dat-tour" element={<BookingPage />} />
       </Route>
 
       {/* Routes chỉ dành cho người đã đăng nhập */}
