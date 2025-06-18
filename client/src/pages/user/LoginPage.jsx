@@ -1,63 +1,14 @@
 // client/src/pages/user/LoginPage.jsx
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from 'react-redux';
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Facebook, Mail } from "lucide-react";
-import { toast } from 'sonner';
-// Sửa đổi import: Chỉ import async thunk `loginUser` và action `reset` để clear state
-import { loginUser, reset } from '../../redux/slices/userSlice';
+import { useLogin } from '../../hooks/useLogin'; // Import the custom hook
 
 export default function LoginPage() {
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-
-    const [formData, setFormData] = useState({ email: "", password: "" });
+    const { formData, loading, handleChange, handleSubmit } = useLogin();
     const { email, password } = formData;
-
-    // Sửa đổi 1: Lấy state từ `state.user` thay vì `state.auth`
-    // và lấy `user`, `token` thay vì `isAuthenticated`, `role`
-    const { user, token, loading, error } = useSelector((state) => state.user);
-
-    useEffect(() => {
-        // Xử lý khi có lỗi từ Redux
-        if (error) {
-            toast.error(error);
-            dispatch(reset()); // Reset state lỗi sau khi hiển thị
-        }
-
-        // Sửa đổi 2: Suy ra `isAuthenticated` từ sự tồn tại của `token`.
-        // Điều hướng sau khi đăng nhập thành công.
-        const isAuthenticated = !!token;
-        if (isAuthenticated && user) {
-            if (user.role === 'admin') {
-                toast.success('Đăng nhập với tư cách Admin thành công!');
-                navigate('/admin/tong-quan'); // Điều hướng đến dashboard admin
-            } else {
-                toast.success('Đăng nhập thành công!');
-                navigate('/'); // Điều hướng về trang chủ cho user
-            }
-        }
-    }, [user, token, error, navigate, dispatch]);
-
-    const handleChange = (e) => {
-        setFormData((prevState) => ({
-            ...prevState,
-            [e.target.name]: e.target.value,
-        }));
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (!email || !password) {
-            toast.error("Vui lòng nhập email và mật khẩu.");
-            return;
-        }
-        // Sửa đổi 3: Dispatch async thunk `loginUser` với dữ liệu form
-        dispatch(loginUser({ email, password }));
-    };
 
     return (
         <div className="container mx-auto max-w-md py-12">
@@ -67,7 +18,6 @@ export default function LoginPage() {
                     <p className="mt-2 text-gray-600">Đăng nhập vào tài khoản của bạn</p>
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* Các trường Input cho email và password */}
                     <div className="space-y-2">
                         <Label htmlFor="email">Email</Label>
                         <Input
@@ -108,7 +58,6 @@ export default function LoginPage() {
                         <span className="bg-white px-2 text-gray-500">Hoặc đăng nhập với (chỉ dành cho khách hàng)</span>
                     </div>
                 </div>
-                {/* Social Logins (Cần logic xử lý riêng) */}
                 <div className="grid grid-cols-2 gap-4">
                     <Button variant="outline" className="w-full"><Facebook className="mr-2 h-4 w-4 text-blue-600" /> Facebook</Button>
                     <Button variant="outline" className="w-full"><Mail className="mr-2 h-4 w-4 text-red-500" /> Google</Button>
@@ -121,4 +70,4 @@ export default function LoginPage() {
             </div>
         </div>
     );
-} 
+}
