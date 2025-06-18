@@ -85,11 +85,11 @@ const RouterConfig = () => (
       </Route>
 
       {/* Routes chỉ dành cho người đã đăng nhập */}
-      <Route element={<UserPrivateRoute />}>
+      {/* <Route element={<UserPrivateRoute />}> */}
         <Route path="/tai-khoan" element={<ProfilePage />} />
           <Route path="/tour-cua-toi" element={<MyToursPage />} />
           <Route path="/tour-yeu-thich" element={<FavoriteToursPage />} />
-      </Route>
+      {/* </Route> */}
 
 
 

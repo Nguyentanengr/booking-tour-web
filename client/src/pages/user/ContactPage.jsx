@@ -7,7 +7,7 @@ import ContactForm from "@/components/contact/ContactForm"; // Adjust path as ne
 export default function ContactPage() {
   return (
     <div className="w-[1400px] mx-auto container py-8">
-      <h1 className="text-3xl font-bold text-center mb-8">Liên hệ với chúng tôi</h1>
+      <h1 className="text-3xl font-bold text-center mb-8 text-blue-600">Liên hệ với chúng tôi</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
         <ContactInfoCard icon={MapPin} title="Địa chỉ">

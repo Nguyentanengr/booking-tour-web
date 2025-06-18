@@ -510,3 +510,304 @@
 - **Ghi chú**:
   - Xác thực JWT là bắt buộc, chỉ admin được phép xóa.
   - Cập nhật `deleted_at` thay vì xóa vật lý.
+
+
+  # Đặc Tả API cho Trang Tổng Quan (Overview)
+
+## Tổng quan
+Tài liệu này mô tả các API cần thiết để hỗ trợ các chức năng của trang Tổng quan, bao gồm thống kê chính, biểu đồ doanh thu theo tháng, danh sách tour phổ biến và các booking gần đây. Tất cả các API yêu cầu xác thực JWT và chỉ dành cho người dùng admin. Định dạng phản hồi tuân theo cấu trúc của API thanh toán, bao gồm các trường `status`, `data`, `error` và `timestamp`.
+
+## 1. API Lấy Thống Kê Tổng Quan
+**Mô tả**: Trả về các số liệu thống kê tổng quan, bao gồm tổng số tour, số chuyến đi, số booking và doanh thu trong một khoảng thời gian cụ thể.
+
+- **URL**: `/api/overview/stats`
+- **Method**: `GET`
+- **Headers**:
+  ```
+  Authorization: Bearer <JWT_TOKEN>
+  Content-Type: application/json
+  ```
+- **Query Parameters**:
+  - `timeRange` (string, optional, default: "30"): Khoảng thời gian cần lấy thống kê (`7` cho 7 ngày, `30` cho 30 ngày, `90` cho 3 tháng, `365` cho 1 năm).
+- **Request Example**:
+  ```
+  GET /api/overview/stats?timeRange=30
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+  ```
+- **Response**:
+  - **Status Code**: `200 OK`
+  - **Body**:
+    ```json
+    {
+      "status": "success",
+      "data": {
+        "totalTours": 50,
+        "activeTours": 45,
+        "totalDepartures": 120,
+        "upcomingDepartures": 20,
+        "totalBookings": 300,
+        "pendingBookings": 15,
+        "totalRevenue": 1500000000,
+        "monthlyRevenue": 500000000
+      },
+      "error": null,
+      "timestamp": "2025-06-18T18:24:00Z"
+    }
+    ```
+  - **Error Responses**:
+    - **401 Unauthorized**:
+      ```json
+      {
+        "status": "error",
+        "data": null,
+        "error": {
+          "code": "UNAUTHORIZED",
+          "message": "Không được phép truy cập. Vui lòng cung cấp token hợp lệ."
+        },
+        "timestamp": "2025-06-18T18:24:00Z"
+      }
+      ```
+    - **400 Bad Request** (nếu tham số không hợp lệ):
+      ```json
+      {
+        "status": "error",
+        "data": null,
+        "error": {
+          "code": "INVALID_REQUEST",
+          "message": "Tham số timeRange không hợp lệ."
+        },
+        "timestamp": "2025-06-18T18:24:00Z"
+      }
+      ```
+- **Ghi chú**:
+  - Xác thực JWT là bắt buộc, chỉ admin được phép truy cập.
+  - `totalTours`: Đếm số tour trong collection `tours` (chưa bị xóa, `deleted_at: null`).
+  - `activeTours`: Đếm số tour có trạng thái `active`.
+  - `totalDepartures`: Đếm số chuyến đi từ `departures` trong khoảng thời gian được chọn.
+  - `upcomingDepartures`: Đếm số chuyến đi có `departureDate` trong tương lai.
+  - `totalBookings`: Đếm số booking từ `bookings` trong khoảng thời gian.
+  - `pendingBookings`: Đếm số booking có trạng thái `pending`.
+  - `totalRevenue`: Tổng `amount` từ các giao dịch `payment` thành công trong `payments`.
+  - `monthlyRevenue`: Tổng `amount` từ các giao dịch `payment` thành công trong tháng hiện tại.
+  - Chỉ trả về dữ liệu chưa bị xóa (`deleted_at: null`).
+
+## 2. API Lấy Dữ Liệu Doanh Thu Theo Tháng
+**Mô tả**: Trả về dữ liệu doanh thu theo từng tháng trong khoảng thời gian được chọn, dùng để hiển thị biểu đồ doanh thu.
+
+- **URL**: `/api/overview/revenue`
+- **Method**: `GET`
+- **Headers**:
+  ```
+  Authorization: Bearer <JWT_TOKEN>
+  Content-Type: application/json
+  ```
+- **Query Parameters**:
+  - `timeRange` (string, optional, default: "30"): Khoảng thời gian cần lấy dữ liệu (`7`, `30`, `90`, `365`).
+- **Request Example**:
+  ```
+  GET /api/overview/revenue?timeRange=30
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+  ```
+- **Response**:
+  - **Status Code**: `200 OK`
+  - **Body**:
+    ```json
+    {
+      "status": "success",
+      "data": [
+        {
+          "month": "1",
+          "revenue": 100000000
+        },
+        {
+          "month": "2",
+          "revenue": 120000000
+        },
+        ...
+      ],
+      "error": null,
+      "timestamp": "2025-06-18T18:24:00Z"
+    }
+    ```
+  - **Error Responses**:
+    - **401 Unauthorized**:
+      ```json
+      {
+        "status": "error",
+        "data": null,
+        "error": {
+          "code": "UNAUTHORIZED",
+          "message": "Không được phép truy cập. Vui lòng cung cấp token hợp lệ."
+        },
+        "timestamp": "2025-06-18T18:24:00Z"
+      }
+      ```
+    - **400 Bad Request**:
+      ```json
+      {
+        "status": "error",
+        "data": null,
+        "error": {
+          "code": "INVALID_REQUEST",
+          "message": "Tham số timeRange không hợp lệ."
+        },
+        "timestamp": "2025-06-18T18:24:00Z"
+      }
+      ```
+- **Ghi chú**:
+  - Xác thực JWT là bắt buộc, chỉ admin được phép truy cập.
+  - Dữ liệu được nhóm theo tháng dựa trên `created_at` của các giao dịch `payment` thành công trong `payments`.
+  - `month`: Số thứ tự tháng (1-12).
+  - `revenue`: Tổng `amount` của các giao dịch `payment` thành công trong tháng đó.
+  - Chỉ trả về dữ liệu chưa bị xóa (`deleted_at: null`).
+
+## 3. API Lấy Danh Sách Tour Phổ Biến
+**Mô tả**: Trả về danh sách các tour phổ biến nhất dựa trên số lượng booking và doanh thu, kèm theo đánh giá trung bình.
+
+- **URL**: `/api/overview/popular-tours`
+- **Method**: `GET`
+- **Headers**:
+  ```
+  Authorization: Bearer <JWT_TOKEN>
+  Content-Type: application/json
+  ```
+- **Query Parameters**:
+  - `timeRange` (string, optional, default: "30"): Khoảng thời gian cần lấy dữ liệu (`7`, `30`, `90`, `365`).
+  - `limit` (number, optional, default: 5): Số lượng tour trả về.
+- **Request Example**:
+  ```
+  GET /api/overview/popular-tours?timeRange=30&limit=5
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+  ```
+- **Response**:
+  - **Status Code**: `200 OK`
+  - **Body**:
+    ```json
+    {
+      "status": "success",
+      "data": [
+        {
+          "id": "507f1f77bcf86cd799439010",
+          "name": "Tour Đà Nẵng - Huế 5N4D",
+          "bookings": 50,
+          "revenue": 500000000,
+          "rating": 4.5
+        },
+        ...
+      ],
+      "error": null,
+      "timestamp": "2025-06-18T18:24:00Z"
+    }
+    ```
+  - **Error Responses**:
+    - **401 Unauthorized**:
+      ```json
+      {
+        "status": "error",
+        "data": null,
+        "error": {
+          "code": "UNAUTHORIZED",
+          "message": "Không được phép truy cập. Vui lòng cung cấp token hợp lệ."
+        },
+        "timestamp": "2025-06-18T18:24:00Z"
+      }
+      ```
+    - **400 Bad Request**:
+      ```json
+      {
+        "status": "error",
+        "data": null,
+        "error": {
+          "code": "INVALID_REQUEST",
+          "message": "Tham số không hợp lệ."
+        },
+        "timestamp": "2025-06-18T18:24:00Z"
+      }
+      ```
+- **Ghi chú**:
+  - Xác thực JWT là bắt buộc, chỉ admin được phép truy cập.
+  - Dữ liệu được lấy từ `tours`, join với `bookings` và `payments` để tính số lượng booking và doanh thu.
+  - `bookings`: Số lượng booking trong khoảng thời gian được chọn.
+  - `revenue`: Tổng `amount` từ các giao dịch `payment` thành công liên quan đến tour.
+  - `rating`: Điểm đánh giá trung bình từ `reviews` (nếu có).
+  - Sắp xếp theo `bookings` hoặc `revenue` (ưu tiên `bookings`).
+  - Chỉ trả về các tour chưa bị xóa (`deleted_at: null`).
+
+## 4. API Lấy Danh Sách Booking Gần Đây
+**Mô tả**: Trả về danh sách các booking gần đây, bao gồm thông tin mã booking, khách hàng, tour, ngày khởi hành, trạng thái và số tiền.
+
+- **URL**: `/api/overview/recent-bookings`
+- **Method**: `GET`
+- **Headers**:
+  ```
+  Authorization: Bearer <JWT_TOKEN>
+  Content-Type: application/json
+  ```
+- **Query Parameters**:
+  - `timeRange` (string, optional, default: "30"): Khoảng thời gian cần lấy dữ liệu (`7`, `30`, `90`, `365`).
+  - `limit` (number, optional, default: 10): Số lượng booking trả về.
+- **Request Example**:
+  ```
+  GET /api/overview/recent-bookings?timeRange=30&limit=10
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+  ```
+- **Response**:
+  - **Status Code**: `200 OK`
+  - **Body**:
+    ```json
+    {
+      "status": "success",
+      "data": [
+        {
+          "id": "507f1f77bcf86cd799439020",
+          "customerName": "Nguyen Van A",
+          "tourName": "Tour Đà Nẵng - Huế 5N4D",
+          "departureDate": "2025-07-01T00:00:00Z",
+          "status": "confirmed",
+          "amount": 9390000
+        },
+        ...
+      ],
+      "error": null,
+      "timestamp": "2025-06-18T18:24:00Z"
+    }
+    ```
+  - **Error Responses**:
+    - **401 Unauthorized**:
+      ```json
+      {
+        "status": "error",
+        "data": null,
+        "error": {
+          "code": "UNAUTHORIZED",
+          "message": "Không được phép truy cập. Vui lòng cung cấp token hợp lệ."
+        },
+        "timestamp": "2025-06-18T18:24:00Z"
+      }
+      ```
+    - **400 Bad Request**:
+      ```json
+      {
+        "status": "error",
+        "data": null,
+        "error": {
+          "code": "INVALID_REQUEST",
+          "message": "Tham số không hợp lệ."
+        },
+        "timestamp": "2025-06-18T18:24:00Z"
+      }
+      ```
+- **Ghi chú**:
+  - Xác thực JWT là bắt buộc, chỉ admin được phép truy cập.
+  - Dữ liệu được lấy từ `bookings`, join với `users`, `tours` và `payments` để lấy thông tin khách hàng, tour và số tiền.
+  - `status`: Có thể là `confirmed`, `pending`, `cancelled`.
+  - `amount`: Lấy từ `total_price` của booking hoặc `amount` từ giao dịch `payment` thành công.
+  - Sắp xếp theo `created_at` giảm dần để lấy các booking gần đây nhất.
+  - Chỉ trả về các booking chưa bị xóa (`deleted_at: null`).
+
+## Ghi chú chung
+- Tất cả các API đều yêu cầu xác thực JWT và chỉ admin được phép truy cập.
+- Định dạng phản hồi tuân theo cấu trúc: `{ status, data, error, timestamp }`.
+- Dữ liệu chỉ bao gồm các bản ghi chưa bị xóa (`deleted_at: null`).
+- Các tham số `timeRange` được xử lý để lọc dữ liệu trong khoảng thời gian tương ứng (7 ngày, 30 ngày, 3 tháng, hoặc 1 năm).
+- Các API join với các collection liên quan (`tours`, `bookings`, `payments`, `users`, `reviews`) để cung cấp thông tin đầy đủ.

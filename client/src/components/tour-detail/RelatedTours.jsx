@@ -85,7 +85,7 @@ export default function RelatedTours({ tours }) {
                       )}
                     </div>
                   </div>
-                  <Link to={`/tours/${tour.id}`}>
+                  <Link to={`/chi-tiet-tour/1`}>
                     <Button variant="outline" size="sm">
                       Xem chi tiết
                     </Button>
@@ -98,7 +98,7 @@ export default function RelatedTours({ tours }) {
       </div>
 
       <div className="text-center">
-        <Link to="/tours">
+        <Link to="/danh-sach-tour">
           <Button variant="outline" size="lg">
             Xem tất cả tour
           </Button>

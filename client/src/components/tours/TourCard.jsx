@@ -100,7 +100,7 @@ export function TourCard({ tour, isFavorite, onToggleFavorite }) {
                 </div>
               </div>
               {/* Thay Link từ next/link bằng Link từ react-router-dom */}
-              <Link to={`/tours/${tour.id}`}>
+              <Link to={`/chi-tiet-tour/1`}>
                 <Button className="w-full mt-4 bg-blue-600 text-white hover:bg-blue-700">Xem chi tiết</Button>
               </Link>
             </div>

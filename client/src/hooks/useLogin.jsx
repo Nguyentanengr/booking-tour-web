@@ -21,9 +21,9 @@ export function useLogin() {
 
         const isAuthenticated = !!token;
         if (isAuthenticated && user) {
-            if (user.role === 'admin') {
-                toast.success('Đăng nhập với tư cách Admin thành công!'); // Sử dụng toast cho thông báo thành công
-                navigate('/admin/tong-quan');
+            if (user.role === 'user') {
+                toast.success('Đăng nhập thành công!'); // Sử dụng toast cho thông báo thành công
+                navigate('/');
             } else {
                 toast.success('Đăng nhập thành công!'); // Sử dụng toast cho thông báo thành công
                 navigate('/');
@@ -41,7 +41,7 @@ export function useLogin() {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!email || !password) {
-            toast.error("Vui lòng nhập email và mật khẩu."); // Sử dụng toast cho thông báo lỗi validation
+            toast.error("Vui lòng nhập email và mật khẩu."); 
             return;
         }
         dispatch(loginUser({ email, password }));

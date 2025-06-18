@@ -4,7 +4,7 @@ let mockUserData = {
   gender: "male",
   email: "nguyenvana@gmail.com",
   phone: "0912345678",
-  avatarUrl: "/placeholder.svg?height=160&width=160",
+  avatarUrl: "https://dulichsaigon.edu.vn/wp-content/uploads/2024/01/tim-hieu-dinh-nghia-du-lich-va-cac-loai-hinh-du-lich.jpg",
   birthDate: new Date(1990, 0, 1), // Using Date object
 };
 

@@ -23,7 +23,7 @@ export default function PopularTours({ popularTours }) {
               </div>
               <div className="p-4">
                 <h3 className="font-semibold text-lg mb-2">{tour.name}</h3>
-                <div className="grid grid-cols-2 gap-2 text-sm text-gray-600 mb-4">
+                <div className="grid grid-cols-2 gap-2 text-sm text-gray-600 mb-4 pt-2">
                   <div>
                     <span className="font-medium">Mã tour:</span> {tour.tourCode}
                   </div>
@@ -61,7 +61,7 @@ export default function PopularTours({ popularTours }) {
                       )}
                     </div>
                   </div>
-                  <Link to={`/tours/${tour.id}`}>
+                  <Link to={`/chi-tiet-tour/${tour.id}`}>
                     <Button variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50">
                       Xem chi tiết
                     </Button>
@@ -72,7 +72,7 @@ export default function PopularTours({ popularTours }) {
           ))}
         </div>
         <div className="flex justify-center mt-8">
-          <Link to="/tours">
+          <Link to="/danh-sach-tour">
             <Button variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50">
               Xem tất cả tour
             </Button>

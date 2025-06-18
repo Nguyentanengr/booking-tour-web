@@ -3,16 +3,15 @@ import {
   PlusIcon,
   PencilIcon,
   TrashIcon,
-  EyeIcon,
+  ScanSearch,
   ShieldIcon,
   UserIcon,
   MapPinIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   SearchIcon,
-  ScanSearch,
 } from 'lucide-react';
-
+import { useDispatch, useSelector } from 'react-redux';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -35,238 +34,26 @@ import EditAccountModal from '../components/account/EditAccountModal';
 import ViewAccountModal from '../components/account/ViewAccountModal';
 import DeleteAccountModal from '../components/account/DeleteAccountModal';
 import avatar from '../assets/img/default-avatar.png';
+import {
+  fetchAccounts,
+  createAccount,
+  fetchAccountById,
+  updateAccount,
+  deleteAccount,
+  setCurrentAccount,
+  clearCurrentAccount,
+} from '../redux/slices/accountSlice';
 
 const Account = () => {
   const [activeTab, setActiveTab] = useState('admins');
-  const [admins, setAdmins] = useState([
-    {
-      _id: 'a1',
-      full_name: 'Trần Văn B',
-      phone_number: '0912345678',
-      password: 'hashed_password',
-      email: 'admin@example.com',
-      avatar_url: avatar,
-      date_of_birth: '1985-01-01',
-      gender: 'Nam',
-      role: 'super_admin',
-      status: 'active',
-      created_at: '2025-05-21T23:00:00Z',
-    },
-    {
-      _id: 'a2',
-      full_name: 'Nguyễn Thị D',
-      phone_number: '0923456789',
-      password: 'hashed_password',
-      email: 'admin2@example.com',
-      avatar_url: avatar,
-      date_of_birth: '1987-03-15',
-      gender: 'Nữ',
-      role: 'admin',
-      status: 'active',
-      created_at: '2025-05-20T10:00:00Z',
-    },
-    {
-      _id: 'a3',
-      full_name: 'Nguyễn Thị D',
-      phone_number: '0923456789',
-      password: 'hashed_password',
-      email: 'admin2@example.com',
-      avatar_url: avatar,
-      date_of_birth: '1987-03-15',
-      gender: 'Nữ',
-      role: 'admin',
-      status: 'active',
-      created_at: '2025-05-20T10:00:00Z',
-    },
-    {
-      _id: 'a4',
-      full_name: 'Nguyễn Thị D',
-      phone_number: '0923456789',
-      password: 'hashed_password',
-      email: 'admin2@example.com',
-      avatar_url: avatar,
-      date_of_birth: '1987-03-15',
-      gender: 'Nữ',
-      role: 'admin',
-      status: 'active',
-      created_at: '2025-05-20T10:00:00Z',
-    },
-    {
-      _id: 'a5',
-      full_name: 'Nguyễn Thị D',
-      phone_number: '0923456789',
-      password: 'hashed_password',
-      email: 'admin2@example.com',
-      avatar_url: avatar,
-      date_of_birth: '1987-03-15',
-      gender: 'Nữ',
-      role: 'admin',
-      status: 'active',
-      created_at: '2025-05-20T10:00:00Z',
-    },
-    {
-      _id: 'a6',
-      full_name: 'Nguyễn Thị D',
-      phone_number: '0923456789',
-      password: 'hashed_password',
-      email: 'admin2@example.com',
-      avatar_url: avatar,
-      date_of_birth: '1987-03-15',
-      gender: 'Nữ',
-      role: 'admin',
-      status: 'deleted',
-      created_at: '2025-05-20T10:00:00Z',
-    },
-    {
-      _id: 'a7',
-      full_name: 'Nguyễn Thị D',
-      phone_number: '0923456789',
-      password: 'hashed_password',
-      email: 'admin2@example.com',
-      avatar_url: avatar,
-      date_of_birth: '1987-03-15',
-      gender: 'Nữ',
-      role: 'admin',
-      status: 'active',
-      created_at: '2025-05-20T10:00:00Z',
-    },
-    {
-      _id: 'a8',
-      full_name: 'Nguyễn Thị D',
-      phone_number: '0923456789',
-      password: 'hashed_password',
-      email: 'admin2@example.com',
-      avatar_url: avatar,
-      date_of_birth: '1987-03-15',
-      gender: 'Nữ',
-      role: 'admin',
-      status: 'inactive',
-      created_at: '2025-05-20T10:00:00Z',
-    },
-    {
-      _id: 'a9',
-      full_name: 'Nguyễn Thị D',
-      phone_number: '0923456789',
-      password: 'hashed_password',
-      email: 'admin2@example.com',
-      avatar_url: avatar,
-      date_of_birth: '1987-03-15',
-      gender: 'Nữ',
-      role: 'admin',
-      status: 'active',
-      created_at: '2025-05-20T10:00:00Z',
-    },
-    {
-      _id: 'a10',
-      full_name: 'Nguyễn Thị D',
-      phone_number: '0923456789',
-      password: 'hashed_password',
-      email: 'admin2@example.com',
-      avatar_url: avatar,
-      date_of_birth: '1987-03-15',
-      gender: 'Nữ',
-      role: 'admin',
-      status: 'active',
-      created_at: '2025-05-20T10:00:00Z',
-    },
-    {
-      _id: 'a11',
-      full_name: 'Nguyễn Thị D',
-      phone_number: '0923456789',
-      password: 'hashed_password',
-      email: 'admin2@example.com',
-      avatar_url: avatar,
-      date_of_birth: '1987-03-15',
-      gender: 'Nữ',
-      role: 'admin',
-      status: 'active',
-      created_at: '2025-05-20T10:00:00Z',
-    },
-    {
-      _id: 'a12',
-      full_name: 'Nguyễn Thị D',
-      phone_number: '0923456789',
-      password: 'hashed_password',
-      email: 'admin2@example.com',
-      avatar_url: avatar,
-      date_of_birth: '1987-03-15',
-      gender: 'Nữ',
-      role: 'admin',
-      status: 'active',
-      created_at: '2025-05-20T10:00:00Z',
-    },
-  ]);
-  const [users, setUsers] = useState([
-    {
-      _id: 'u1',
-      full_name: 'Nguyễn Văn A',
-      phone_number: '0901234567',
-      email: 'user@example.com',
-      password: 'hashed_password',
-      avatar_url: avatar,
-      date_of_birth: '1990-01-01',
-      gender: 'Nam',
-      tour_history: [{ tour_id: 't1', departure_id: 'd1', booking_id: 'b1', status: 'completed' }],
-      favorite_tours: [{ tour_id: 't1' }],
-      status: 'active',
-      created_at: '2025-05-21T23:00:00Z',
-    },
-    {
-      _id: 'u2',
-      full_name: 'Lê Thị E',
-      phone_number: '0934567890',
-      email: 'user2@example.com',
-      password: 'hashed_password',
-      avatar_url: avatar,
-      date_of_birth: '1992-05-20',
-      gender: 'Nữ',
-      tour_history: [],
-      favorite_tours: [],
-      status: 'active',
-      created_at: '2025-05-19T15:30:00Z',
-    },
-  ]);
-  const [guides, setGuides] = useState([
-    {
-      _id: 'g1',
-      full_name: 'Lê Thị C',
-      phone_number: '0912345678',
-      email: 'guide@example.com',
-      avatar_url: avatar,
-      date_of_birth: '1988-01-01',
-      gender: 'Nữ',
-      password: 'hashed_password',
-      past_assignments: [{ assignment_id: 'ta1' }],
-      status: 'active',
-      created_at: '2025-05-21T23:00:00Z',
-    },
-    {
-      _id: 'g2',
-      full_name: 'Phạm Văn F',
-      phone_number: '0945678901',
-      email: 'guide2@example.com',
-      avatar_url: avatar,
-      date_of_birth: '1985-08-10',
-      gender: 'Nam',
-      password: 'hashed_password',
-      past_assignments: [],
-      status: 'active',
-      created_at: '2025-05-18T09:00:00Z',
-    },
-  ]);
-  const [filteredAccounts, setFilteredAccounts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
-  const [currentAccount, setCurrentAccount] = useState(null);
   const [deleteReason, setDeleteReason] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
-  const accountsPerPage = 10;
-
   const [formData, setFormData] = useState({
     full_name: '',
     phone_number: '',
@@ -277,107 +64,60 @@ const Account = () => {
     gender: '',
     status: 'active',
     role: 'admin',
+    type: 'admins',
   });
 
-  const getCurrentAccounts = () => {
-    switch (activeTab) {
-      case 'admins':
-        return admins;
-      case 'users':
-        return users;
-      case 'guides':
-        return guides;
-      default:
-        return [];
-    }
-  };
+  const dispatch = useDispatch();
+  const { accounts, pagination, currentAccount, loading } = useSelector((state) => state.accounts);
+  const accountsPerPage = 10;
 
   useEffect(() => {
-    const currentAccounts = getCurrentAccounts();
-    let filtered = [...currentAccounts];
-
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (account) =>
-          account.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          account.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          account.phone_number.includes(searchTerm),
-      );
-    }
-
-    if (statusFilter && statusFilter !== 'all') {
-      filtered = filtered.filter((account) => account.status === statusFilter);
-    }
-
-    setFilteredAccounts(filtered);
-    setCurrentPage(1);
-  }, [searchTerm, statusFilter, activeTab, admins, users, guides]);
+    const type = activeTab === 'guides' ? 'users' : activeTab;
+    dispatch(fetchAccounts({
+      type,
+      search: searchTerm,
+      status: statusFilter,
+      page: pagination.currentPage,
+      limit: accountsPerPage,
+    }));
+  }, [dispatch, activeTab, searchTerm, statusFilter, pagination.currentPage]);
 
   const handleAddAccount = () => {
-    const newAccount = {
+    const accountData = {
       ...formData,
-      _id: `${activeTab.slice(0, 1)}${Date.now()}`,
-      created_at: new Date().toISOString(),
+      type: activeTab === 'guides' ? 'users' : activeTab,
+      role: activeTab === 'guides' ? 'guide' : formData.role,
     };
-
-    switch (activeTab) {
-      case 'admins':
-        setAdmins([...admins, newAccount]);
-        break;
-      case 'users':
-        setUsers([...users, { ...newAccount, tour_history: [], favorite_tours: [] }]);
-        break;
-      case 'guides':
-        setGuides([...guides, { ...newAccount, past_assignments: [] }]);
-        break;
-    }
-
-    setShowAddModal(false);
-    resetForm();
+    dispatch(createAccount(accountData)).then(() => {
+      setShowAddModal(false);
+      resetForm();
+    });
   };
 
   const handleUpdateAccount = () => {
     if (!currentAccount) return;
-
-    switch (activeTab) {
-      case 'admins':
-        setAdmins(admins.map((admin) => (admin._id === currentAccount._id ? { ...admin, ...formData } : admin)));
-        break;
-      case 'users':
-        setUsers(users.map((user) => (user._id === currentAccount._id ? { ...user, ...formData } : user)));
-        break;
-      case 'guides':
-        setGuides(guides.map((guide) => (guide._id === currentAccount._id ? { ...guide, ...formData } : guide)));
-        break;
-    }
-
-    setShowEditModal(false);
-    resetForm();
+    const accountData = {
+      ...formData,
+      type: activeTab === 'guides' ? 'users' : activeTab,
+      role: activeTab === 'guides' ? 'guide' : formData.role,
+    };
+    dispatch(updateAccount({ id: currentAccount._id, accountData })).then(() => {
+      setShowEditModal(false);
+      resetForm();
+    });
   };
 
   const handleDeleteAccount = () => {
     if (!currentAccount) return;
-
-    const updatedAccount = {
-      ...currentAccount,
-      status: 'deleted',
-      deleted_at: new Date().toISOString(),
-    };
-
-    switch (activeTab) {
-      case 'admins':
-        setAdmins(admins.map((admin) => (admin._id === currentAccount._id ? updatedAccount : admin)));
-        break;
-      case 'users':
-        setUsers(users.map((user) => (user._id === currentAccount._id ? updatedAccount : user)));
-        break;
-      case 'guides':
-        setGuides(guides.map((guide) => (guide._id === currentAccount._id ? updatedAccount : guide)));
-        break;
-    }
-
-    setShowDeleteModal(false);
-    setDeleteReason('');
+    dispatch(deleteAccount({
+      id: currentAccount._id,
+      type: activeTab === 'guides' ? 'users' : activeTab,
+      deleteReason,
+    })).then(() => {
+      setShowDeleteModal(false);
+      setDeleteReason('');
+      dispatch(clearCurrentAccount());
+    });
   };
 
   const resetForm = () => {
@@ -391,23 +131,35 @@ const Account = () => {
       gender: '',
       status: 'active',
       role: 'admin',
+      type: 'admins',
     });
-    setCurrentAccount(null);
+    dispatch(clearCurrentAccount());
   };
 
   const openEditModal = (account) => {
-    setCurrentAccount(account);
-    setFormData({ ...account });
+    dispatch(setCurrentAccount(account));
+    setFormData({
+      full_name: account.fullName,
+      phone_number: account.phoneNumber,
+      email: account.email,
+      password: '',
+      avatar_url: account.avatarUrl || '',
+      date_of_birth: account.dateOfBirth || '',
+      gender: account.gender || '',
+      status: account.status,
+      role: account.role || 'admin',
+      type: activeTab === 'guides' ? 'users' : activeTab,
+    });
     setShowEditModal(true);
   };
 
   const openViewModal = (account) => {
-    setCurrentAccount(account);
+    dispatch(fetchAccountById({ id: account._id, type: activeTab === 'guides' ? 'users' : activeTab }));
     setShowViewModal(true);
   };
 
   const openDeleteModal = (account) => {
-    setCurrentAccount(account);
+    dispatch(setCurrentAccount(account));
     setShowDeleteModal(true);
   };
 
@@ -419,7 +171,7 @@ const Account = () => {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return '';
+    if (!dateString) return 'N/A';
     const date = new Date(dateString);
     return date.toLocaleDateString('vi-VN', {
       day: '2-digit',
@@ -490,10 +242,17 @@ const Account = () => {
       .slice(0, 2);
   };
 
-  const indexOfLastAccount = currentPage * accountsPerPage;
-  const indexOfFirstAccount = indexOfLastAccount - accountsPerPage;
-  const currentAccounts = filteredAccounts.slice(indexOfFirstAccount, indexOfLastAccount);
-  const totalPages = Math.ceil(filteredAccounts.length / accountsPerPage);
+  const filteredAccounts = activeTab === 'guides'
+    ? accounts.filter((account) => account.role === 'guide')
+    : accounts;
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <p className="text-gray-600">Đang tải danh sách tài khoản...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-8 px-5">
@@ -557,24 +316,24 @@ const Account = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {currentAccounts.length > 0 ? (
-              currentAccounts.map((account) => (
+            {filteredAccounts.length > 0 ? (
+              filteredAccounts.map((account) => (
                 <TableRow key={account._id} className="hover:bg-muted/50">
                   <TableCell>
                     <div className="flex items-center">
                       <img
-                        src={account.avatar_url || avatar}
-                        alt={account.full_name}
+                        src={account.avatarUrl || avatar}
+                        alt={account.fullName}
                         className="h-10 w-10 rounded-full mr-3 object-cover"
                       />
                       <div>
-                        <div className="font-medium">{account.full_name || 'N/A'}</div>
+                        <div className="font-medium">{account.fullName || 'N/A'}</div>
                         <div className="text-muted-foreground">{account.gender || 'N/A'}</div>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>{account.email || 'N/A'}</TableCell>
-                  <TableCell>{account.phone_number || 'N/A'}</TableCell>
+                  <TableCell>{account.phoneNumber || 'N/A'}</TableCell>
                   {activeTab === 'admins' && <TableCell>{account.role || 'N/A'}</TableCell>}
                   <TableCell>
                     <span
@@ -591,7 +350,7 @@ const Account = () => {
                       {getStatusText(account.status)}
                     </span>
                   </TableCell>
-                  <TableCell>{formatDate(account.created_at)}</TableCell>
+                  <TableCell>{formatDate(account.createdAt)}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
                       <Button variant="ghost" size="icon" onClick={() => openViewModal(account)}>
@@ -609,7 +368,7 @@ const Account = () => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={activeTab === 'admins' ? 7 : 5} className="text-center text-muted-foreground">
+                <TableCell colSpan={activeTab === 'admins' ? 7 : 6} className="text-center text-muted-foreground">
                   Không tìm thấy tài khoản
                 </TableCell>
               </TableRow>
@@ -617,24 +376,36 @@ const Account = () => {
           </TableBody>
         </Table>
       </div>
-      {totalPages > 1 && (
+      {pagination.totalPages > 1 && (
         <div className="flex justify-center mt-6">
           <div className="flex items-center justify-center gap-2">
             <Button
               variant="outline"
               size="icon"
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(currentPage > 1 ? currentPage - 1 : 1)}
+              disabled={pagination.currentPage === 1}
+              onClick={() => dispatch(fetchAccounts({
+                type: activeTab === 'guides' ? 'users' : activeTab,
+                search: searchTerm,
+                status: statusFilter,
+                page: pagination.currentPage - 1,
+                limit: accountsPerPage,
+              }))}
               className="h-6 w-6 cursor-pointer"
             >
-              <ChevronLeftIcon className="h-3 w-3"/>
+              <ChevronLeftIcon className="h-3 w-3" />
             </Button>
-            <span className="px-2 border rounded bg-white text-gray-800">{currentPage}</span>
+            <span className="px-2 border rounded bg-white text-gray-800">{pagination.currentPage}</span>
             <Button
               variant="outline"
               size="icon"
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage(currentPage < totalPages ? currentPage + 1 : totalPages)}
+              disabled={pagination.currentPage === pagination.totalPages}
+              onClick={() => dispatch(fetchAccounts({
+                type: activeTab === 'guides' ? 'users' : activeTab,
+                search: searchTerm,
+                status: statusFilter,
+                page: pagination.currentPage + 1,
+                limit: accountsPerPage,
+              }))}
               className="h-6 w-6 cursor-pointer"
             >
               <ChevronRightIcon className="h-3 w-3" />
