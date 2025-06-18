@@ -8,6 +8,7 @@ const aPaymentRoutes = require('./routes/aPaymentRoutes');
 const authRoutes = require('./routes/authRoutes');   
 const aBookingRoutes = require('./routes/aBookingRoutes'); 
 const aAccountRoutes = require('./routes/aAccountRoutes');
+const aOverviewRoutes = require('./routes/aOverviewRoutes');
 
 const log4js = require('log4js');
 
@@ -38,6 +39,7 @@ app.use('/api/v1/fake-jwt', fakeJwtRoutes);
 app.use('/api/v1/payments', aPaymentRoutes);
 app.use('/api/v1/bookings', aBookingRoutes);
 app.use('/api/v1/accounts', aAccountRoutes);
+app.use('/api/v1/overviews', aOverviewRoutes);
 
 // Xử lý lỗi toàn cục
 app.use(errorMiddleware);
