@@ -186,9 +186,8 @@ const AddAccountModal = ({ show, onClose, formData, onFormChange, onSubmit, acti
                   className="w-full p-2 border rounded focus:outline-none focus:ring-1 focus:ring-blue-300"
                 >
                   <option value="">Chọn vai trò</option>
-                  <option value="super_admin">Super Admin</option>
                   <option value="admin">Admin</option>
-                  <option value="staff">Staff</option>
+                  <option value="staff">Nhân viên</option>
                 </select>
               </div>
             )}

@@ -6,6 +6,8 @@ const tourRoutes = require('./routes/tourRoutes');
 const fakeJwtRoutes = require('./routes/fakeJwtRoutes');
 const aPaymentRoutes = require('./routes/aPaymentRoutes');
 const aBookingRoutes = require('./routes/aBookingRoutes');
+const aAccountRoutes = require('./routes/aAccountRoutes');
+
 const log4js = require('log4js');
 
 log4js.configure({
@@ -32,7 +34,8 @@ app.use(express.json());
 app.use('/api/v1/tours', tourRoutes);
 app.use('/api/v1/fake-jwt', fakeJwtRoutes);
 app.use('/api/v1/payments', aPaymentRoutes);
-app.use('/api/v1/bookings', aBookingRoutes)
+app.use('/api/v1/bookings', aBookingRoutes);
+app.use('/api/v1/accounts', aAccountRoutes);
 
 // Xử lý lỗi toàn cục
 app.use(errorMiddleware);

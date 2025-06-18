@@ -324,7 +324,7 @@ const updatePayment = async (req, res) => {
         // 1. Kiểm tra định dạng ID của payment
         if (!mongoose.Types.ObjectId.isValid(id)) {
             logger.warn(`Invalid Payment ID format for update: ${id}`);
-            return errorResponse(res, 'ID giao dịch không hợp lệ.', 400, 'INVALID_PAYMENT_ID');
+            return errorResponse(res, 'ID giao dịch không hợp lệ.', 400);
         }
 
         const objectPaymentId = new mongoose.Types.ObjectId(id);
@@ -334,7 +334,7 @@ const updatePayment = async (req, res) => {
 
         if (!existingPayment) {
             logger.warn(`Payment with ID ${id} not found or already deleted for update.`);
-            return errorResponse(res, 'Không tìm thấy giao dịch hoặc đã bị xóa.', 404, 'PAYMENT_NOT_FOUND');
+            return errorResponse(res, 'Không tìm thấy giao dịch hoặc đã bị xóa.', 404);
         }
 
         // 3. Kiểm tra sự tồn tại của Booking ID (nếu có thay đổi hoặc là bắt buộc)
@@ -347,7 +347,7 @@ const updatePayment = async (req, res) => {
 
             if (!existingBooking) {
                 logger.warn(`Provided Booking ID not found or already deleted: ${booking_id}`);
-                return errorResponse(res, 'Booking ID không tồn tại hoặc đã bị xóa.', 404, 'BOOKING_NOT_FOUND');
+                return errorResponse(res, 'Booking ID không tồn tại hoặc đã bị xóa.', 404);
             }
         }
 
@@ -386,7 +386,7 @@ const deletePayment = async (req, res) => {
         // 1. Kiểm tra định dạng ID của payment
         if (!mongoose.Types.ObjectId.isValid(id)) {
             logger.warn(`Invalid Payment ID format for deletion: ${id}`);
-            return errorResponse(res, 'ID giao dịch không hợp lệ.', 400, 'INVALID_PAYMENT_ID');
+            return errorResponse(res, 'ID giao dịch không hợp lệ.', 400);
         }
 
         const objectPaymentId = new mongoose.Types.ObjectId(id);
@@ -401,7 +401,7 @@ const deletePayment = async (req, res) => {
 
         if (!result) {
             logger.warn(`Payment with ID ${id} not found or already deleted.`);
-            return errorResponse(res, 'Không tìm thấy giao dịch hoặc đã bị xóa.', 404, 'PAYMENT_NOT_FOUND');
+            return errorResponse(res, 'Không tìm thấy giao dịch hoặc đã bị xóa.', 404);
         }
 
         logger.info(`Payment with ID ${id} soft deleted successfully.`);

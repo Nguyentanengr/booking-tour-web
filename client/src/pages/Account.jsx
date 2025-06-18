@@ -507,6 +507,7 @@ const Account = () => {
                 activeTab === tab ? 'bg-blue-700 text-white hover:bg-blue-600' : 'border-gray-300 text-gray-700 hover:bg-gray-100'
               }`}
               onClick={() => setActiveTab(tab)}
+              disabled={tab === 'guides' && activeTab !== 'guides' ? true : false}
             >
               {getAccountIcon(tab)} {getTabTitle(tab)}
             </Button>
@@ -531,7 +532,7 @@ const Account = () => {
                 <SelectItem value="all">Tất cả trạng thái</SelectItem>
                 <SelectItem value="active">Hoạt động</SelectItem>
                 <SelectItem value="inactive">Tạm khóa</SelectItem>
-                <SelectItem value="deleted">Đã xóa</SelectItem>
+                {/* <SelectItem value="deleted">Đã xóa</SelectItem> */}
               </SelectContent>
             </Select>
           </div>
