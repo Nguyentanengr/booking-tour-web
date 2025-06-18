@@ -1,4 +1,8 @@
 
+import { configureStore } from '@reduxjs/toolkit';
+import userReducer from './slices/userSlice';
+
+
 import tourReducer from './slices/tourSlice';
 import overviewReducer from './slices/overviewSlice';
 import accountReducer from './slices/accountSlice';

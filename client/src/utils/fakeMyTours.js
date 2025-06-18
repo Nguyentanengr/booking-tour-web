@@ -10,7 +10,8 @@ const mockTours = {
       transportation: "Máy bay",
       price: 8990000,
       status: "confirmed",
-      image: "/placeholder.svg?height=200&width=300",
+      image: "https://dulichsaigon.edu.vn/wp-content/uploads/2024/01/tim-hieu-dinh-nghia-du-lich-va-cac-loai-hinh-du-lich.jpg",
+
       passengers: 2,
     },
   ],
@@ -25,7 +26,8 @@ const mockTours = {
       transportation: "Máy bay",
       price: 6590000,
       status: "completed",
-      image: "/placeholder.svg?height=200&width=300",
+      image: "https://dulichsaigon.edu.vn/wp-content/uploads/2024/01/tim-hieu-dinh-nghia-du-lich-va-cac-loai-hinh-du-lich.jpg",
+
       passengers: 2,
       rating: null,
     },
@@ -41,7 +43,9 @@ const mockTours = {
       transportation: "Máy bay",
       price: 5790000,
       status: "cancelled",
-      image: "/placeholder.svg?height=200&width=300",
+
+      image: "https://dulichsaigon.edu.vn/wp-content/uploads/2024/01/tim-hieu-dinh-nghia-du-lich-va-cac-loai-hinh-du-lich.jpg",
+
       passengers: 2,
       cancelDate: new Date(2024, 3, 15),
       refundAmount: 4632000,

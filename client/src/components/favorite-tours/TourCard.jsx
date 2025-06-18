@@ -80,7 +80,7 @@ export function TourCard({ tour }) {
               )}
             </div>
           </div>
-          <Link to={`/tours/${tour.id}`}> {/* Sử dụng 'to' prop cho react-router-dom */}
+          <Link to={`/chi-tiet-tour/1`}> {/* Sử dụng 'to' prop cho react-router-dom */}
             <Button variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50">
               Xem chi tiết
             </Button>

@@ -3,11 +3,11 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/authMiddleware');
 
-const { createTour, getTours , getTourDetails, addReviewToTour, getPopularTours, getToursUser, getTourReviews} = require('../controllers/tourController');
-const {createTourValidator, getTourValidator} = require("../validators/tourValidator");
 
-router.get('/admin', ...getTourValidator, getTours);
-router.post('/', authMiddleware(['admin']), ...createTourValidator, createTour);
+const { getTourDetails, addReviewToTour, getPopularTours, getToursUser, getTourReviews} = require('../controllers/tourController');
+
+
+
 
 router.get('/', getToursUser); // Lấy danh sách tour (có filter, paginate)
 router.get('/popular', getPopularTours); // Lấy các tour phổ biến

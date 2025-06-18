@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const connectDB = require('./configs/db');
 const errorMiddleware = require('./middleware/errorMiddleware');
-const tourRoutes = require('./routes/aTourRoutes');
+
 const fakeJwtRoutes = require('./routes/fakeJwtRoutes');
 const aPaymentRoutes = require('./routes/aPaymentRoutes');
 
@@ -12,7 +12,7 @@ const notificationRoutes = require('./routes/notificationRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const provinceRoutes = require('./routes/provinceRoutes');
 const tourRoutes = require('./routes/tourRoutes');
-const cors = require('cors');
+
 
 const aBookingRoutes = require('./routes/aBookingRoutes'); 
 const aAccountRoutes = require('./routes/aAccountRoutes');
@@ -44,8 +44,7 @@ connectDB();
 // Middleware
 app.use(express.json());
 
-// Cho phép mọi origin truy cập
-app.use(cors());
+
 // Routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/fake-jwt', fakeJwtRoutes);

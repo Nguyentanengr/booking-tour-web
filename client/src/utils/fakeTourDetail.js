@@ -10,11 +10,11 @@ const tourDetail = {
   averageRating: 4.5,
   reviewCount: 128,
   images: [
-    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-JyMLp4VKADq8h1bWbBc4I8lVn3G1YP.png",
-    "https://via.placeholder.com/600x400/FF5733/FFFFFF?text=Tour+Image+2", // Replaced placeholder.svg
-    "https://via.placeholder.com/600x400/33FF57/FFFFFF?text=Tour+Image+3", // Replaced placeholder.svg
-    "https://via.placeholder.com/600x400/3357FF/FFFFFF?text=Tour+Image+4", // Replaced placeholder.svg
-    "https://via.placeholder.com/600x400/F4FF33/FFFFFF?text=Tour+Image+5", // Replaced placeholder.svg
+    "https://dulichsaigon.edu.vn/wp-content/uploads/2024/01/tim-hieu-dinh-nghia-du-lich-va-cac-loai-hinh-du-lich.jpg",
+    "https://dulichsaigon.edu.vn/wp-content/uploads/2024/01/tim-hieu-dinh-nghia-du-lich-va-cac-loai-hinh-du-lich.jpg", // Replaced placeholder.svg
+    "https://dulichsaigon.edu.vn/wp-content/uploads/2024/01/tim-hieu-dinh-nghia-du-lich-va-cac-loai-hinh-du-lich.jpg", // Replaced placeholder.svg
+    "https://dulichsaigon.edu.vn/wp-content/uploads/2024/01/tim-hieu-dinh-nghia-du-lich-va-cac-loai-hinh-du-lich.jpg", // Replaced placeholder.svg
+    "https://dulichsaigon.edu.vn/wp-content/uploads/2024/01/tim-hieu-dinh-nghia-du-lich-va-cac-loai-hinh-du-lich.jpg", // Replaced placeholder.svg
   ],
   description:
     "Khám phá Singapore hiện đại và Malaysia đa văn hóa trong chuyến du lịch 5 ngày 4 đêm đầy thú vị. Trải nghiệm những điểm tham quan nổi tiếng, ẩm thực đặc sắc và văn hóa độc đáo của hai quốc gia Đông Nam Á.",
@@ -118,7 +118,7 @@ const reviews = [
     date: "15/05/2024",
     comment:
       "Tour rất tuyệt vời! Hướng dẫn viên nhiệt tình, lịch trình hợp lý. Khách sạn sạch sẽ, ăn uống ngon. Sẽ quay lại với gia đình.",
-    images: ["https://via.placeholder.com/100x100?text=Review+1.1", "https://via.placeholder.com/100x100?text=Review+1.2"], // Replaced placeholder.svg
+    images: ["https://dulichsaigon.edu.vn/wp-content/uploads/2024/01/tim-hieu-dinh-nghia-du-lich-va-cac-loai-hinh-du-lich.jpg"], // Replaced placeholder.svg
   },
   {
     name: "Trần Thị B",
@@ -126,7 +126,7 @@ const reviews = [
     date: "10/05/2024",
     comment:
       "Chuyến đi khá ổn, cảnh đẹp, dịch vụ tốt. Chỉ có điều thời gian hơi gấp gáp một chút. Nhưng nhìn chung rất hài lòng.",
-    images: ["https://via.placeholder.com/100x100?text=Review+2.1"], // Replaced placeholder.svg
+    images: ["https://dulichsaigon.edu.vn/wp-content/uploads/2024/01/tim-hieu-dinh-nghia-du-lich-va-cac-loai-hinh-du-lich.jpg"], // Replaced placeholder.svg
   },
   {
     name: "Lê Văn C",
@@ -142,7 +142,7 @@ const relatedTours = [
   {
     id: 2,
     name: "Thailand - Bangkok - Pattaya",
-    image: "https://via.placeholder.com/350x250?text=Thailand+Tour", // Replaced placeholder.svg
+    image: "https://dulichsaigon.edu.vn/wp-content/uploads/2024/01/tim-hieu-dinh-nghia-du-lich-va-cac-loai-hinh-du-lich.jpg", // Replaced placeholder.svg
     duration: "4N3Đ",
     price: 8590000,
     originalPrice: 9590000,
@@ -155,7 +155,7 @@ const relatedTours = [
   {
     id: 3,
     name: "Malaysia - Kuala Lumpur - Genting",
-    image: "https://via.placeholder.com/350x250?text=Malaysia+Tour", // Replaced placeholder.svg
+    image: "https://dulichsaigon.edu.vn/wp-content/uploads/2024/01/tim-hieu-dinh-nghia-du-lich-va-cac-loai-hinh-du-lich.jpg", // Replaced placeholder.svg
     duration: "3N2Đ",
     price: 6590000,
     originalPrice: null,
@@ -168,7 +168,7 @@ const relatedTours = [
   {
     id: 4,
     name: "Singapore - Gardens by the Bay",
-    image: "https://via.placeholder.com/350x250?text=Singapore+Tour", // Replaced placeholder.svg
+    image: "https://dulichsaigon.edu.vn/wp-content/uploads/2024/01/tim-hieu-dinh-nghia-du-lich-va-cac-loai-hinh-du-lich.jpg", // Replaced placeholder.svg
     duration: "3N2Đ",
     price: 12590000,
     originalPrice: 13590000,

@@ -10,7 +10,7 @@ const mockFavoriteTours = [
     transportation: "Máy bay",
     price: 14590000,
     discountedPrice: 13590000,
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-JyMLp4VKADq8h1bWbBc4I8lVn3G1YP.png",
+    image: "https://dulichsaigon.edu.vn/wp-content/uploads/2024/01/tim-hieu-dinh-nghia-du-lich-va-cac-loai-hinh-du-lich.jpg",
     averageRating: 4.5,
     departureDates: ["28/05", "03/06", "04/06", "10/06"],
     isPromoted: true,
@@ -25,7 +25,7 @@ const mockFavoriteTours = [
     transportation: "Máy bay",
     price: 6590000,
     discountedPrice: 5590000,
-    image: "https://via.placeholder.com/400x300?text=Phu+Quoc", // Changed placeholder
+    image: "https://dulichsaigon.edu.vn/wp-content/uploads/2024/01/tim-hieu-dinh-nghia-du-lich-va-cac-loai-hinh-du-lich.jpg", // Changed placeholder
     averageRating: 4.8,
     departureDates: ["01/06", "08/06", "15/06", "22/06"],
     isPromoted: false,
@@ -40,7 +40,7 @@ const mockFavoriteTours = [
     transportation: "Xe khách",
     price: 2590000,
     discountedPrice: null,
-    image: "https://via.placeholder.com/400x300?text=Da+Lat", // Changed placeholder
+    image: "https://dulichsaigon.edu.vn/wp-content/uploads/2024/01/tim-hieu-dinh-nghia-du-lich-va-cac-loai-hinh-du-lich.jpg", // Changed placeholder
     averageRating: 4.3,
     departureDates: ["30/05", "06/06", "13/06", "20/06"],
     isPromoted: false,

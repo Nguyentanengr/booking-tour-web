@@ -23,7 +23,9 @@ export function useLogin() {
         if (isAuthenticated && user) {
             if (user.role === 'user') {
                 toast.success('Đăng nhập thành công!'); // Sử dụng toast cho thông báo thành công
-                navigate('/admin/tong-quan');
+
+                navigate('/');
+
             } else {
                 toast.success('Đăng nhập thành công!'); // Sử dụng toast cho thông báo thành công
                 navigate('/');

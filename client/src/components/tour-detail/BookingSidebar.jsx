@@ -68,7 +68,7 @@ export default function BookingSidebar({ tourDetail, selectedDeparture, scrollTo
                   )}
                 </div>
               </div>
-              <Link to={`/booking?tour=${tourDetail.id}&departure=${selectedDeparture.id}`}>
+              <Link to={`/dat-tour`}>
                 <Button className="w-full bg-blue-600 text-white hover:bg-blue-700" size="lg">
                   Đặt tour ngay
                 </Button>

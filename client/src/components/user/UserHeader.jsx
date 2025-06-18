@@ -7,12 +7,17 @@ import DestinationDropdown from "../header/DestinationDropdown";
 import UserMenu from "../header/UserMenu";
 import NotificationMenu from "../header/NotificationMenu";
 
+import { useDispatch } from 'react-redux';
+
+
 export default function Header() {
+const dispatch = useDispatch()
   const [isLoggedIn, setIsLoggedIn] = useState(true); // Giả lập trạng thái đăng nhập
-const isAuth
   const handleLogout = () => {
     setIsLoggedIn(false);
-    // Logic đăng xuất thực tế (ví dụ: xóa token, redirect)
+
+
+
     console.log("User logged out");
   };
 
