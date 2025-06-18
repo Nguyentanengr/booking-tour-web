@@ -266,7 +266,6 @@ const updateAccount = async (req, res) => {
             type,
             full_name: fullName,    // Destructure from snake_case to camelCase
             email,
-            password,
             phone_number: phoneNumber, // Destructure from snake_case to camelCase
             date_of_birth: dateOfBirth, // Destructure from snake_case to camelCase
             gender,
@@ -316,11 +315,6 @@ const updateAccount = async (req, res) => {
             } else {
                 account.avatarUrl = avatarUrl; // Assume it's a valid URL
             }
-        }
-
-        // Xử lý cập nhật mật khẩu nếu được cung cấp
-        if (password !== undefined) {
-            account.password = await bcrypt.hash(password, 10);
         }
 
         // Kiểm tra xung đột email nếu email được cập nhật
@@ -394,7 +388,6 @@ const updateAccount = async (req, res) => {
     }
 };
 
-
 const deleteAccount = async (req, res) => {
     try {
         const { id } = req.params;
@@ -404,7 +397,7 @@ const deleteAccount = async (req, res) => {
         if (!Model) {
             return errorResponse(res, {
                 code: 'INVALID_TYPE',
-                message: 'Invalid account type. Must be "admins", "users"' // Updated message
+                message: 'Invalid account type. Must be "admins" or "users"'
             }, 400);
         }
 
@@ -421,13 +414,26 @@ const deleteAccount = async (req, res) => {
             }, 404);
         }
 
-        // Perform soft delete
-        account.status = 'deleted';
-        account.deletedAt = new Date();
-        account.deleteReason = deleteReason; // Store the reason for deletion
-        account.updatedAt = new Date(); // Update the updatedAt field
+        // Perform soft delete using updateOne to avoid validation
+        const updateResult = await Model.updateOne(
+            { _id: id, deletedAt: null },
+            {
+                $set: {
+                    status: 'deleted',
+                    deletedAt: new Date(),
+                    deleteReason,
+                    updatedAt: new Date(),
+                },
+            }
+        );
 
-        await account.save();
+        if (updateResult.modifiedCount === 0) {
+            logger.warn(`No account was updated for ID: ${id}, type: ${type}`);
+            return errorResponse(res, {
+                code: 'NOT_MODIFIED',
+                message: 'Failed to delete account.'
+            }, 400);
+        }
 
         logger.info(`Account soft deleted successfully for ID: ${id}`);
         return successResponse(res, { message: 'Account deleted successfully.' }, 200);

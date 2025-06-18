@@ -5,7 +5,7 @@ const validationMiddleware = require('../middleware/validationMiddleware');
 const getAccountsValidator = [
     query('type')
         .notEmpty().withMessage('Type cannot be empty.')
-        .isIn(['admins', 'users']).withMessage('Type must be either "admins" or "users".'),
+        .isIn(['admins', 'users', 'admin', 'user']).withMessage('Type must be either "admins" or "users".'),
     query('search').optional().trim(),
     query('status')
         .optional()
@@ -24,7 +24,7 @@ const getAccountsValidator = [
 const createAccountValidator = [
     body('type')
         .notEmpty().withMessage('Account type is required.')
-        .isIn(['admin', 'user']).withMessage('Account type must be either "admin" or "user".'),
+        .isIn(['admin', 'user', 'admins', 'users']).withMessage('Account type must be either "admin" or "user", "admins", or "users"' ),
 
     body('full_name')
         .notEmpty().withMessage('Full name is required.')
@@ -73,7 +73,7 @@ const createAccountValidator = [
         }),
 
     body('role')
-        .if(body('type').equals('admin'))
+        .if(body('type').equals('admin') || body('type').equals('admins'))
         .notEmpty().withMessage('Role is required for admin accounts.')
         .isIn(['admin', 'staff']).withMessage('Invalid role. Only "admin" or "staff" are allowed.'),
 
@@ -83,7 +83,7 @@ const createAccountValidator = [
 const updateAccountValidator = [
     body('type')
         .notEmpty().withMessage('Account type is required.')
-        .isIn(['admin', 'user']).withMessage('Account type must be either "admin" or "user".'),
+        .isIn(['admin', 'user', 'admins', 'users']).withMessage('Account type must be either "admin" or "user".'),
 
     body('full_name')
         .notEmpty().withMessage('Full name is required.')
@@ -94,12 +94,6 @@ const updateAccountValidator = [
         .notEmpty().withMessage('Email is required.')
         .isEmail().withMessage('Invalid email format.')
         .normalizeEmail(),
-
-    body('password')
-        .notEmpty().withMessage('Password is required.')
-        .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long.')
-        .matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/)
-        .withMessage('Password must contain both letters and numbers.'),
 
     body('phone_number')
         .notEmpty().withMessage('Phone number is required.')
@@ -132,7 +126,7 @@ const updateAccountValidator = [
         }),
 
     body('role')
-        .if(body('type').equals('admin'))
+        .if(body('type').equals('admin') || body('type').equals('admins'))
         .notEmpty().withMessage('Role is required for admin accounts.')
         .isIn(['admin', 'staff']).withMessage('Invalid role. Only "admin" or "staff" are allowed.'),
 
@@ -142,7 +136,7 @@ const updateAccountValidator = [
 const getAccountByIdValidator = [
     query('type')
         .notEmpty().withMessage('Account type (type) is required.')
-        .isIn(['admins', 'users']).withMessage('Invalid account type. Must be either "admins" or "users".'),
+        .isIn(['admins', 'users', 'admin', 'user']).withMessage('Invalid account type. Must be either "admins" or "users".'),
     validationMiddleware
 ];
 
@@ -151,7 +145,7 @@ const deleteAccountValidator = [
         .notEmpty().withMessage('Account ID is required.'),
     body('type')
         .notEmpty().withMessage('Account type is required.')
-        .isIn(['admins', 'users', 'guides']).withMessage('Invalid account type. Must be "admins", "users", or "guides".'), // Added 'guides'
+        .isIn(['admins', 'users', 'admin', 'user']).withMessage('Invalid account type. Must be "admins", "users".'), // Added 'guides'
     body('delete_reason') // Changed to snake_case for consistency with previous discussion
         .notEmpty().withMessage('Delete reason is required.')
         .isLength({ min: 5 }).withMessage('Delete reason must be at least 5 characters long.'),
