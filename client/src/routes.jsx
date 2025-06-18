@@ -17,7 +17,6 @@ import Booking from "./pages/Booking";
 import Payment from "./pages/Payment";
 import CustomersAnalytics from "./pages/CustomersAnalytics";
 import ToursPage from "./pages/user/ToursPage";
-import MyToursPage from "./pages/user/MyToursPage";
 import FavoriteToursPage from "./pages/user/FavoriteToursPage";
 import TourDetailPage from "./pages/user/TourDetailPage";
 import BookingPage from "./pages/user/BookingPage";
@@ -72,9 +71,6 @@ const RouterConfig = () => (
   <Routes>
     <Route path="/" element={<UserLayout />}>
       <Route index element={<HomePage />} />
-
-
-
       {/* BỌC CÁC ROUTE NÀY BẰNG PublicOnlyRoute */}
       <Route element={<PublicOnlyRoute />}>
         <Route path="/dang-nhap" element={<LoginPage />} />
