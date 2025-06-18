@@ -9,7 +9,7 @@ import NotificationMenu from "../header/NotificationMenu";
 
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(true); // Giả lập trạng thái đăng nhập
-
+const isAuth
   const handleLogout = () => {
     setIsLoggedIn(false);
     // Logic đăng xuất thực tế (ví dụ: xóa token, redirect)

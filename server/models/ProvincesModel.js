@@ -11,7 +11,6 @@ const provinceSchema = new mongoose.Schema({
     deletedAt: { type: Date, default: null }
 });
 
-provinceSchema.index({ _id: 1 });
 
 provinceSchema.pre('findOneAndUpdate', function(next) {
   this.set({ updatedAt: new Date() });
