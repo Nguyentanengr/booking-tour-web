@@ -45,6 +45,10 @@ img {
   height: auto;
 } 
 
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+}
+
 /* Đảm bảo ứng dụng chiếm toàn bộ chiều cao màn hình */
 #root {
   min-height: 100vh;
