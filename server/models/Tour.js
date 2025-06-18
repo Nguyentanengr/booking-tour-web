@@ -16,4 +16,4 @@ const tourSchema = new mongoose.Schema({
 // Thêm index cho titleNormalized để tìm kiếm nhanh hơn
 tourSchema.index({ title: 1 });
 
-module.exports = mongoose.model('Tour', tourSchema);
+module.exports = mongoose.model('TourTest', tourSchema);
