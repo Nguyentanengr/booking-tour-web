@@ -11,6 +11,5 @@ const provinceSchema = new mongoose.Schema({
     deletedAt: { type: Date, default: null }
 });
 
-provinceSchema.index({ _id: 1 });
 
 module.exports = mongoose.model('Province', provinceSchema);

@@ -2,13 +2,14 @@ require('dotenv').config();
 const express = require('express');
 const connectDB = require('./configs/db');
 const errorMiddleware = require('./middleware/errorMiddleware');
-const tourRoutes = require('./routes/tourRoutes');
+const tourRoutes = require('./routes/aTourRoutes');
 const fakeJwtRoutes = require('./routes/fakeJwtRoutes');
 const aPaymentRoutes = require('./routes/aPaymentRoutes');
 const authRoutes = require('./routes/authRoutes');   
 const aBookingRoutes = require('./routes/aBookingRoutes'); 
 const aAccountRoutes = require('./routes/aAccountRoutes');
 const aOverviewRoutes = require('./routes/aOverviewRoutes');
+const aTourRoutes = require('./routes/aTourRoutes');
 
 const log4js = require('log4js');
 
@@ -34,12 +35,12 @@ app.use(express.json());
 
 // Routes
 app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/tours', tourRoutes);
 app.use('/api/v1/fake-jwt', fakeJwtRoutes);
-app.use('/api/v1/payments', aPaymentRoutes);
-app.use('/api/v1/bookings', aBookingRoutes);
-app.use('/api/v1/accounts', aAccountRoutes);
-app.use('/api/v1/overviews', aOverviewRoutes);
+app.use('/api/v1/admin/payments', aPaymentRoutes);
+app.use('/api/v1/admin/bookings', aBookingRoutes);
+app.use('/api/v1/admin/accounts', aAccountRoutes);
+app.use('/api/v1/admin/overviews', aOverviewRoutes);
+app.use('/api/v1/admin/tours', aTourRoutes);
 
 // Xử lý lỗi toàn cục
 app.use(errorMiddleware);
