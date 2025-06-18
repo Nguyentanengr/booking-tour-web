@@ -43,5 +43,3 @@ mongod.lock
 # Miscellaneous
 *.bak
 *.pid
-
-.env
