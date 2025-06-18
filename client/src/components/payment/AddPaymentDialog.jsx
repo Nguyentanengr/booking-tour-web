@@ -4,21 +4,25 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useEffect, useState, useRef } from "react";
-import axios from 'axios'; // Đảm bảo đã cài đặt axios
+import axios from 'axios';
+import { useDispatch } from "react-redux";
+import { createPayment } from "../../redux/slices/paymentSlice";
+import { toast } from "react-hot-toast";
 
 export default function AddPaymentDialog({
   open,
   onOpenChange,
   formData,
   setFormData,
-  handleAddPayment,
   handleFormChange,
+  resetForm,
 }) {
+  const dispatch = useDispatch();
   const [errors, setErrors] = useState({});
-  const [bookingIdSearchResults, setBookingIdSearchResults] = useState([]); // Chứa chỉ các _id
-  const [bookingIdSearchQuery, setBookingIdSearchQuery] = useState(""); // Query người dùng nhập
+  const [bookingIdSearchResults, setBookingIdSearchResults] = useState([]);
+  const [bookingIdSearchQuery, setBookingIdSearchQuery] = useState("");
   const [isSearchingBookings, setIsSearchingBookings] = useState(false);
-  const [selectedBookingDisplay, setSelectedBookingDisplay] = useState(""); // Để hiển thị Booking ID đã chọn trong input
+  const [selectedBookingDisplay, setSelectedBookingDisplay] = useState("");
 
   const debounceTimeoutRef = useRef(null);
 
@@ -51,28 +55,26 @@ export default function AddPaymentDialog({
     }
   }, [formData.amount, setFormData]);
 
-  // Effect để tìm kiếm Booking ID khi người dùng gõ
   useEffect(() => {
     if (debounceTimeoutRef.current) {
       clearTimeout(debounceTimeoutRef.current);
     }
 
-    if (bookingIdSearchQuery.length >= 3) { // Bắt đầu tìm kiếm khi có ít nhất 3 ký tự
+    if (bookingIdSearchQuery.length >= 3) {
       setIsSearchingBookings(true);
       debounceTimeoutRef.current = setTimeout(async () => {
         try {
-          // Gọi API mới chỉ tìm kiếm theo ID
-          // const response = await axios.get(`/api/v1/bookings/search-id?query=${bookingIdSearchQuery}`);
-          // setBookingIdSearchResults(response.data.data); // response.data.data sẽ chứa mảng các { _id: "..." }
-          // setIsSearchingBookings(false);
+          const response = await axios.get(`/api/v1/admin/bookings/search-id?query=${bookingIdSearchQuery}`);
+          setBookingIdSearchResults(response.data.data);
+          setIsSearchingBookings(false);
         } catch (error) {
           console.error("Lỗi khi tìm kiếm Booking ID:", error);
           setBookingIdSearchResults([]);
           setIsSearchingBookings(false);
         }
-      }, 300); // Debounce 300ms
+      }, 300);
     } else {
-      setBookingIdSearchResults([]); // Xóa kết quả nếu query quá ngắn
+      setBookingIdSearchResults([]);
       setIsSearchingBookings(false);
     }
     return () => {
@@ -82,7 +84,6 @@ export default function AddPaymentDialog({
     };
   }, [bookingIdSearchQuery]);
 
-  // Effect để hiển thị Booking ID đã chọn vào input
   useEffect(() => {
     if (formData.booking_id) {
       setSelectedBookingDisplay(formData.booking_id);
@@ -91,37 +92,31 @@ export default function AddPaymentDialog({
     }
   }, [formData.booking_id]);
 
-
   const validateForm = () => {
     const newErrors = {};
     let isValid = true;
 
-    // Validate Booking ID
     if (!formData.booking_id) {
       newErrors.booking_id = "Booking ID không được để trống.";
       isValid = false;
     }
 
-    // Validate Loại giao dịch
     if (!formData.type) {
       newErrors.type = "Loại giao dịch không được để trống.";
       isValid = false;
     }
 
-    // Validate Số tiền
     const amountValue = parseFloat(String(formData.amount).replace(/,/g, ''));
     if (isNaN(amountValue) || amountValue < 1000) {
       newErrors.amount = "Số tiền phải tối thiểu 1.000.";
       isValid = false;
     }
 
-    // Validate Phương thức thanh toán
     if (!formData.payment_method) {
       newErrors.payment_method = "Phương thức thanh toán không được để trống.";
       isValid = false;
     }
 
-    // Validate Mã giao dịch DỰA TRÊN PHƯƠNG THỨC THANH TOÁN
     if (formData.payment_method && formData.payment_method !== "cash") {
       if (!formData.transaction_id || formData.transaction_id.trim() === "") {
         newErrors.transaction_id = "Mã giao dịch là bắt buộc với phương thức này.";
@@ -135,8 +130,17 @@ export default function AddPaymentDialog({
 
   const handleSubmit = async () => {
     if (validateForm()) {
-      await handleAddPayment();
-      setErrors({});
+      try {
+        // Exclude displayAmount from the payload
+        const { displayAmount, ...paymentData } = formData;
+        await dispatch(createPayment(paymentData)).unwrap();
+        toast.success("Tạo giao dịch thành công!");
+        setErrors({});
+        resetForm();
+        onOpenChange(false);
+      } catch (error) {
+        toast.error(error || "Lỗi khi tạo giao dịch");
+      }
     }
   };
 
@@ -145,9 +149,10 @@ export default function AddPaymentDialog({
       onOpenChange(isOpen);
       if (!isOpen) {
         setErrors({});
-        setBookingIdSearchQuery(""); // Xóa query khi đóng dialog
-        setBookingIdSearchResults([]); // Xóa kết quả khi đóng dialog
-        setSelectedBookingDisplay(""); // Xóa hiển thị khi đóng dialog
+        setBookingIdSearchQuery("");
+        setBookingIdSearchResults([]);
+        setSelectedBookingDisplay("");
+        resetForm();
       }
     }}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -157,25 +162,23 @@ export default function AddPaymentDialog({
         </DialogHeader>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2 relative"> {/* Thêm relative để dropdown đúng vị trí */}
+          <div className="space-y-2 relative">
             <Label htmlFor="booking_id_input">Booking ID <span className="text-red-500">*</span></Label>
             <Input
               id="booking_id_input"
               type="text"
-              // Hiển thị ID đã chọn, hoặc query đang gõ nếu chưa chọn
               value={formData.booking_id ? selectedBookingDisplay : bookingIdSearchQuery}
               onChange={(e) => {
                 setBookingIdSearchQuery(e.target.value);
-                handleFormChange("booking_id", ""); // Xóa ID đã chọn khi người dùng gõ
+                handleFormChange("booking_id", "");
                 setErrors(prev => ({ ...prev, booking_id: "" }));
               }}
               placeholder="Nhập Booking ID để tìm kiếm"
               className={errors.booking_id ? "border-red-500" : ""}
             />
             {isSearchingBookings && bookingIdSearchQuery.length >= 3 && (
-                <p className="text-sm text-gray-500 mt-1">Đang tìm kiếm...</p>
+              <p className="text-sm text-gray-500 mt-1">Đang tìm kiếm...</p>
             )}
-            {/* Hiển thị danh sách kết quả tìm kiếm */}
             {Array.isArray(bookingIdSearchResults) && bookingIdSearchResults.length > 0 && !formData.booking_id && (
               <div className="absolute z-10 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
                 {bookingIdSearchResults.map((booking) => (
@@ -183,10 +186,9 @@ export default function AddPaymentDialog({
                     key={booking._id}
                     className="p-2 cursor-pointer hover:bg-gray-100"
                     onClick={() => {
-                      handleFormChange("booking_id", booking._id); // Gán _id vào formData
-                      // setSelectedBookingDisplay(booking._id); // Hiển thị _id trong input
-                      setBookingIdSearchResults([]); // Xóa danh sách gợi ý
-                      setBookingIdSearchQuery(""); // Xóa query tìm kiếm
+                      handleFormChange("booking_id", booking._id);
+                      setBookingIdSearchResults([]);
+                      setBookingIdSearchQuery("");
                       setErrors(prev => ({ ...prev, booking_id: "" }));
                     }}
                   >
@@ -199,13 +201,14 @@ export default function AddPaymentDialog({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="type">
-              Loại giao dịch <span className="text-red-500">*</span>
-            </Label>
-            <Select value={formData.type || ""} onValueChange={(value) => {
+            <Label htmlFor="type">Loại giao dịch <span className="text-red-500">*</span></Label>
+            <Select
+              value={formData.type || ""}
+              onValueChange={(value) => {
                 handleFormChange("type", value);
                 setErrors(prev => ({ ...prev, type: "" }));
-              }}>
+              }}
+            >
               <SelectTrigger id="type" className={errors.type ? "border-red-500" : ""}>
                 <SelectValue placeholder="Chọn loại giao dịch" />
               </SelectTrigger>
@@ -218,9 +221,7 @@ export default function AddPaymentDialog({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="amount">
-              Số tiền <span className="text-red-500">*</span>
-            </Label>
+            <Label htmlFor="amount">Số tiền <span className="text-red-500">*</span></Label>
             <Input
               id="amount"
               type="text"
@@ -234,9 +235,7 @@ export default function AddPaymentDialog({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="payment_method">
-              Phương thức thanh toán <span className="text-red-500">*</span>
-            </Label>
+            <Label htmlFor="payment_method">Phương thức thanh toán <span className="text-red-500">*</span></Label>
             <Select
               value={formData.payment_method || ""}
               onValueChange={(value) => {
@@ -283,7 +282,10 @@ export default function AddPaymentDialog({
 
           <div className="space-y-2">
             <Label htmlFor="status">Trạng thái <span className="text-red-500">*</span></Label>
-            <Select value={formData.status || ""} onValueChange={(value) => handleFormChange("status", value)}>
+            <Select
+              value={formData.status || ""}
+              onValueChange={(value) => handleFormChange("status", value)}
+            >
               <SelectTrigger id="status">
                 <SelectValue placeholder="Chọn trạng thái" />
               </SelectTrigger>

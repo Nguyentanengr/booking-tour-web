@@ -1,11 +1,27 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useDispatch } from "react-redux";
+import { deletePayment } from "../../redux/slices/paymentSlice";
+import { toast } from "react-hot-toast";
 
 export default function DeletePaymentDialog({
   open,
   onOpenChange,
-  handleDeletePayment,
+  currentPayment,
 }) {
+  const dispatch = useDispatch();
+
+  const handleDelete = async () => {
+    if (!currentPayment) return;
+    try {
+      await dispatch(deletePayment(currentPayment._id)).unwrap();
+      toast.success("Xóa giao dịch thành công!");
+      onOpenChange(false);
+    } catch (error) {
+      toast.error(error || "Lỗi khi xóa giao dịch");
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -20,7 +36,7 @@ export default function DeletePaymentDialog({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Hủy
           </Button>
-          <Button onClick={handleDeletePayment} variant="destructive">
+          <Button onClick={handleDelete} variant="destructive">
             Xóa giao dịch
           </Button>
         </DialogFooter>

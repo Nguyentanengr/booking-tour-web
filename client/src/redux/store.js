@@ -3,6 +3,7 @@ import userReducer from "./slices/userSlice";
 import tourReducer from './slices/tourSlice';
 import overviewReducer from './slices/overviewSlice';
 import accountReducer from './slices/accountSlice';
+import paymentReducer from './slices/paymentSlice';
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     tours: tourReducer,
     overview: overviewReducer, 
     accounts: accountReducer,
+    payments: paymentReducer,
   },
 });
 

@@ -52,7 +52,7 @@ const getPayments = async (req, res) => {
                 $match: {
                     ...(type !== 'all' && { type: type }),
                     ...(status !== 'all' && { status: status }),
-                    ...(method !== 'all' && { paymentMethod: method }),
+                    ...(method !== 'all' && { payment_method: method }),
                     ...(year && {
                         $expr: {
                             $eq: [{ $year: "$createdAt" }, year]
@@ -125,62 +125,113 @@ const getPayments = async (req, res) => {
 };
 
 const getStats = async (req, res) => {
-    try {
-        const year = parseInt(req.query.year) || new Date().getFullYear();
-        logger.info(`Received params for getStats: year=${year}`);
+  try {
+    const year = parseInt(req.query.year) || new Date().getFullYear();
+    logger.info(`Received params for getStats: year=${year}`);
 
-        const statsPipeline = [
-            {
-                $match: {
-                    deletedAt: null,
-                    createdAt: {
-                        $gte: new Date(Date.UTC(year, 0, 1, 0, 0, 0)),
-                        $lt: new Date(Date.UTC(year + 1, 0, 1, 0, 0, 0))
-                    }
-                }
+    const statsPipeline = [
+      {
+        $match: {
+          deletedAt: null,
+          createdAt: {
+            $gte: new Date(Date.UTC(year, 0, 1, 0, 0, 0)),
+            $lt: new Date(Date.UTC(year + 1, 0, 1, 0, 0, 0)),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalCount: { $sum: 1 },
+          totalPaymentCount: {
+            $sum: {
+              $cond: {
+                if: {
+                  $and: [
+                    { $eq: ["$type", "payment"] },
+                    { $eq: ["$status", "success"] },
+                  ],
+                },
+                then: 1,
+                else: 0,
+              },
             },
-            {
-                $group: {
-                    _id: null,
-                    totalCount: { $sum: 1 },
-                    totalPaymentAmount: {
-                        $sum: {
-                            $cond: { if: { $eq: ["$type", "payment"] }, then: "$amount", else: 0 }
-                        }
-                    },
-                    totalRefundAmount: {
-                        $sum: {
-                            $cond: { if: { $eq: ["$type", "refund"] }, then: "$amount", else: 0 }
-                        }
-                    }
-                }
+          },
+          totalPaymentAmount: {
+            $sum: {
+              $cond: {
+                if: {
+                  $and: [
+                    { $eq: ["$type", "payment"] },
+                    { $eq: ["$status", "success"] },
+                  ],
+                },
+                then: "$amount",
+                else: 0,
+              },
             },
-            {
-                $project: {
-                    _id: 0,
-                    totalCount: 1,
-                    totalPaymentAmount: 1,
-                    totalRefundAmount: 1,
-                    netRevenue: { $subtract: ["$totalPaymentAmount", "$totalRefundAmount"] }
-                }
-            }
-        ];
+          },
+          totalRefundCount: {
+            $sum: {
+              $cond: {
+                if: {
+                  $and: [
+                    { $eq: ["$type", "refund"] },
+                    { $eq: ["$status", "success"] },
+                  ],
+                },
+                then: 1,
+                else: 0,
+              },
+            },
+          },
+          totalRefundAmount: {
+            $sum: {
+              $cond: {
+                if: {
+                  $and: [
+                    { $eq: ["$type", "refund"] },
+                    { $eq: ["$status", "success"] },
+                  ],
+                },
+                then: "$amount",
+                else: 0,
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          totalCount: 1,
+          totalPaymentCount: 1,
+          totalPaymentAmount: 1,
+          totalRefundCount: 1,
+          totalRefundAmount: 1,
+          netRevenue: { $subtract: ["$totalPaymentAmount", "$totalRefundAmount"] },
+        },
+      },
+    ];
 
-        const statsResult = await Payment.aggregate(statsPipeline);
+    const statsResult = await Payment.aggregate(statsPipeline);
 
-        const stats = statsResult.length > 0 ? statsResult[0] : {
-            totalCount: 0,
-            totalPaymentAmount: 0,
-            totalRefundAmount: 0,
-            netRevenue: 0
+    const stats = statsResult.length > 0
+      ? statsResult[0]
+      : {
+          totalCount: 0,
+          totalPaymentCount: 0,
+          totalPaymentAmount: 0,
+          totalRefundCount: 0,
+          totalRefundAmount: 0,
+          netRevenue: 0,
         };
 
-        successResponse(res, { stats }, 200);
-
-    } catch (error) {
-        logger.error('Error getting payment stats: ', error);
-        errorResponse(res, 'Uncategorized error: ' + error.message, 500);
-    }
+    successResponse(res, { stats }, 200);
+  } catch (error) {
+    logger.error('Error getting payment stats: ', error);
+    errorResponse(res, 'Uncategorized error: ' + error.message, 500);
+  }
 };
 
 const getPaymentById = async (req, res) => {
